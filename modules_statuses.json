@@ -1,0 +1,23 @@
+{
+    "Area": true,
+    "Admin": true,
+    "Core": true,
+    "Dashboard": true,
+    "Auth": true,
+    "Permission": true,
+    "Category": true,
+    "Product": true,
+    "Setting": true,
+    "Store": true,
+    "Customer": true,
+    "Courier": true,
+    "Activity": true,
+    "Order": true,
+    "Wallet": true,
+    "Payment": true,
+    "Report": true,
+    "Accounting": true,
+    "Sms": true,
+    "Unit": true,
+    "Employee": true
+}
