@@ -2,10 +2,8 @@
 
 namespace Modules\Product\Jobs;
 
-use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\DB;
@@ -14,9 +12,9 @@ use Modules\Product\Models\Product;
 use Modules\Store\Enums\StoreType;
 use Modules\Store\Models\Store;
 
-class IncrementProductDailyBalance implements ShouldQueue
+class IncrementProductDailyBalance
 {
-  use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+  use Dispatchable, InteractsWithQueue, SerializesModels;
   
   private Collection $products;
   private ?Admin $admin;

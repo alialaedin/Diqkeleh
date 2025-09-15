@@ -38,7 +38,7 @@ class OrderUpdaterService
 
 		$updateData = ['status' => $newStatus];
 
-		if ($newStatus == OrderStatus::DELIVERED) {
+		if ($newStatus == OrderStatus::DELIVERED->value) {
 			$updateData['delivered_at'] = now();
 		}
 

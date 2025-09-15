@@ -1,13 +1,13 @@
 <x-layouts.master title="سفارشات" id="app">
 
-  <div class="page-header">
+  <div class="page-header d-print-none">
     <x-breadcrumb>
       <x-breadcrumb-item title="سفارشات" :route="route('admin.orders.index')" />
       <x-breadcrumb-item title="ثبت سفارش جدید" />
     </x-breadcrumb>
   </div>
 
-  <x-card title="اطلاعات مشتری">
+  <x-card title="اطلاعات مشتری" class="d-print-none">
 
     <div class="row">
 
@@ -16,7 +16,10 @@
           <label>انتخاب مشتری <span class="text-danger">&starf;</span></label>
           <input type="text" class="form-control" v-model="customerMobile" :disabled="isCustomerMobileInputDisabled" />
         </fieldset>
-        <button v-if="showCancleCustomerButton" class="btn btn-sm btn-danger" @click="removeCustomer">لغو مشتری</button>
+        <div v-if="showCancleCustomerButton" class="d-flex" style="gap: 8px">
+          <button class="btn btn-sm btn-danger" @click="removeCustomer">لغو</button>
+          <span class="badge badge-info">کیف پول : @{{ customer.wallet.balance.toLocaleString() }} تومان</span>
+        </div>
       </div>
 
       <template v-if="customer">
@@ -51,7 +54,7 @@
 
   </x-card>
 
-  <x-card title="اطلاعات سفارش">
+  <x-card title="اطلاعات سفارش" class="d-print-none">
 
     <x-row>
 
@@ -88,7 +91,7 @@
 
   </x-card>
 
-  <x-card title="انتخاب محصولات">
+  <x-card title="انتخاب محصولات" class="d-print-none">
 
     <div class="row">
       <div class="col-12 col-xl-3">
@@ -173,7 +176,7 @@
 
   </x-card>
 
-  <x-row v-if="selectedProducts.length" class="justify-content-center">
+  <x-row v-if="selectedProducts.length" class="justify-content-center d-print-none">
     <x-col md="8" lg="6" xl="4">
       <x-card>
         <div class="row flex-column" style="gap: 8px">
@@ -206,8 +209,14 @@
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
-            <b class="fs-12">پرداخت از (تومان) :</b>
+            <b class="fs-12">پرداخت از پوز (تومان) :</b>
             <input v-model="posAmount" type="text" class="text-left form-control" style="width: auto"
+              @input="formatNumber($event)" />
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <b class="fs-12">پرداخت از کیف پول (تومان) :</b>
+            <input v-model="fromWalletAmount" type="text" class="text-left form-control" style="width: auto"
               @input="formatNumber($event)" />
           </div>
 
@@ -222,6 +231,42 @@
     <div style="margin-top: 80px"></div>
 
   </x-row>
+
+  <div v-if="selectedProducts.length" class="table-responsive d-none d-print-block">
+    <div class="dataTables_wrapper dt-bootstrap4 no-footer">
+      <div class="row">
+        <table class="table table-vcenter table-striped text-nowrap table-bordered text-center border-bottom">
+          <thead class="thead-dark">
+            <tr>
+              <th>ردیف</th>
+              <th>عنوان</th>
+              <th>قیمت</th>
+              <th>تخفیف</th>
+              <th>تعداد</th>
+              <th>جمع کل</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(product, index) in selectedProducts" :key="index">
+              <td class="font-weight-bold">@{{ index + 1 }}</td>
+              <td>@{{ product.title }}</td>
+              <td>@{{ Number(product.price?.replace(/,/g, "") ?? 0).toLocaleString() }}</td>
+              <td>@{{ Number(product.discount?.replace(/,/g, "") ?? 0).toLocaleString() }}</td>
+              <td>@{{ product.quantity }}</td>
+              <td>@{{ productFinalPrices[index].toLocaleString() }}</td>
+            </tr>
+            <tr>
+              <td colspan="2">جمع کل</td>
+              <td>@{{ finalPrices.baseAmount.toLocaleString() }}</td>
+              <td>@{{ finalPrices.discountAmount.toLocaleString() }}</td>
+              <td>@{{ selectedProducts.reduce((sum, product) => sum + product.quantity, 0) }}</td>
+              <td>@{{ finalPrices.finalAmount.toLocaleString() }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
   <x-modal id="new-address-modal" title="ثبت آدرس جدید">
     <x-row>
@@ -296,6 +341,7 @@
             cardByCardAmount: null,
             cashAmount: null,
             posAmount: null,
+            fromWalletAmount: null,
             newAddress: {
               first_name: null,
               last_name: null,
@@ -494,6 +540,28 @@
           },
           store() {
 
+            const fromWalletAmount = Number(this.fromWalletAmount?.replace(/,/g, "") ?? 0);
+
+            if (fromWalletAmount > 0 && fromWalletAmount > this.customer.wallet.balance) {
+              this.popup('warning', 'خطای اعتبار سنجی', 'میزان پرداختی از کیف پول بیشتر از موجودی کاربر است');
+              return;
+            }
+
+            if (this.customer.first_name.trim().length == 0) {
+              this.popup('warning', 'خطای اعتبار سنجی', 'نام مشتری وارد نشده است');
+              return;
+            }
+
+            if (this.customer.last_name.trim().length == 0) {
+              this.popup('warning', 'خطای اعتبار سنجی', 'نام خانوادگی مشتری وارد نشده است');
+              return;
+            }
+
+            if (this.address == null) {
+              this.popup('warning', 'خطای اعتبار سنجی', 'ابتدا یک آدرس انتخاب کنید');
+              return;
+            }
+
             this.isStoreButtonDisabled = true;
 
             const url = @json(route('admin.orders.store'));
@@ -507,18 +575,18 @@
               products: [],
             };
 
-            data['shipping_amount'] = Number(this.shippingAmount?.replace(/,/g, "") ?? 0);
-            data['discount_amount'] = Number(this.discountAmount?.replace(/,/g, "") ?? 0);
-            data['cash_amount'] = Number(this.cashAmount?.replace(/,/g, "") ?? 0);
-            data['card_by_card_amount'] = Number(this.cardByCardAmount?.replace(/,/g, "") ?? 0);
-            data['pos_amount'] = Number(this.posAmount?.replace(/,/g, "") ?? 0);
+            data['shipping_amount'] = Number(this.shippingAmount?.toString().replace(/,/g, "") ?? 0);
+            data['discount_amount'] = Number(this.discountAmount?.toString().replace(/,/g, "") ?? 0);
+            data['cash_amount'] = Number(this.cashAmount?.toString().replace(/,/g, "") ?? 0);
+            data['card_by_card_amount'] = Number(this.cardByCardAmount?.toString().replace(/,/g, "") ?? 0);
+            data['pos_amount'] = Number(this.posAmount?.toString().replace(/,/g, "") ?? 0);
 
             this.selectedProducts?.forEach(product => {
               data.products.push({
                 id: product.id,
                 quantity: product.quantity,
-                amount: Number(product.price?.replace(/,/g, "") ?? 0),
-                discount_amount: Number(product.discount?.replace(/,/g, "") ?? 0),
+                amount: Number(product.price?.toString().replace(/,/g, "") ?? 0),
+                discount_amount: Number(product.discount?.toString().replace(/,/g, "") ?? 0),
               });
             });
 
@@ -526,6 +594,7 @@
               this.request(url, 'POST', data, async (result) => {
                 console.log(result);
                 this.popup('success', '', result.message);
+                window.print();
                 window.location.replace(@json(route('admin.orders.index')));
               });
             } catch (error) {

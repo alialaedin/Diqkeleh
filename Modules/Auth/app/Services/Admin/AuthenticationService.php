@@ -44,7 +44,7 @@ class AuthenticationService
 
   private function loginAdmin()
   {
-    $attempt = Auth::guard(Admin::GUARD_NAME)->attempt($this->request->validated(), 1);
+    $attempt = Auth::guard(Admin::GUARD_NAME)->attempt($this->request->validated());
     
     if (!$attempt) {
       throw new ValidationException('خطا در لاگین');

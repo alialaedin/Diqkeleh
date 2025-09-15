@@ -2,14 +2,14 @@
 
 namespace Modules\Store\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Core\Models\BaseModel;
 use Modules\Core\Traits\HasMorphAuthors;
 use Modules\Store\Enums\StoreType;
 
-class StoreTransaction extends Model
+class StoreTransaction extends BaseModel
 {
 	use HasMorphAuthors;
 	protected $fillable = ['store_id', 'type', 'description', 'quantity'];
