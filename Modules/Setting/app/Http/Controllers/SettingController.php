@@ -21,13 +21,19 @@ class SettingController extends Controller
 	public function update(Request $request)
 	{
 		$inputs = $request->except(['_token', '_method']);
-
+		
 		foreach ($inputs as $name => $value) {
 			if ($setting = Setting::where('name', $name)->first()) {
 				if (in_array($setting->type, SettingType::getFileTypes()) && $value->isValid()) {
 					$setting->uploadFile($value);
 					$setting->refresh();
 					$value = $setting->file['url'];
+				}
+				if ($setting->type == SettingType::BOOLEAN) {
+					$value = $value === 'on' ? 1 : 0;
+				}
+				if ($setting->type == SettingType::PRICE) {
+					$value = (int) str_replace(',', '', $value);
 				}
 				$setting->update(['value' => $value]);
 			}

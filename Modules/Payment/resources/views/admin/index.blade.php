@@ -78,7 +78,7 @@
             </td>
             <td>{{ number_format($payment->amount) }}</td>
             <td>
-              <x-badge :type="$payment->type->color()" :text="$payment->type->label()" />
+              <x-badge :type="$payment->type->color()" :text="$payment->type->label()" :is-light="true" />
             </td>
             <td><x-jalali-date :date="$payment->created_at" /></td>
             <td><x-jalali-date :date="$payment->updated_at" /></td>

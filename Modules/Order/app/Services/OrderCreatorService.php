@@ -10,9 +10,11 @@ use Modules\Customer\Models\Address;
 use Modules\Customer\Models\Customer;
 use Modules\Order\Http\Requests\Admin\Order\OrderStoreRequest;
 use Modules\Payment\Enums\PaymentType as EnumsPaymentType;
+use Modules\Setting\Models\Setting;
 use Modules\Sms\Sms;
 use Modules\Store\Enums\StoreType;
 use Modules\Store\Services\BalanceChangerService;
+use Modules\Wallet\Services\WalletService;
 
 class OrderCreatorService
 {
@@ -27,6 +29,7 @@ class OrderCreatorService
 			$this->createOrder();
 			$this->createOrderItems();
 			$this->createPayments();
+			$this->withdrawWallet();
 			$this->sendSms();
 		});
 
@@ -82,7 +85,7 @@ class OrderCreatorService
 
 	private function createPayments(): void
 	{
-		$paymentTypesKeys = ['cash_amount', 'card_by_card_amount', 'pos_amount'];
+		$paymentTypesKeys = ['cash_amount', 'card_by_card_amount', 'pos_amount', 'from_wallet_amount'];
 		$data = [];
 
 		foreach ($paymentTypesKeys as $key) {
@@ -92,6 +95,7 @@ class OrderCreatorService
 					'customer_id' => $this->order->customer_id,
 					'amount' => $amount,
 					'type' => EnumsPaymentType::getTypeByRequestKey($key),
+					'description' => "پرداختی سفارش به شناسه {$this->order->id}",
 					'paid_at' => now(),
 					'created_at' => now(),
 					'updated_at' => now(),
@@ -101,6 +105,24 @@ class OrderCreatorService
 
 		if (!empty($data)) {
 			DB::table('payments')->insert($data);
+		}
+	}
+
+	private function withdrawWallet(): void
+	{
+		$fromWalletAmount = $this->request->input('from_wallet_amount') ?? 0;
+		if ($fromWalletAmount > 0) {
+
+			$useGiftBalanceToo = Setting::getFromName('use_gift_balance_in_order') ? true : false;
+			$sendWithdrawSms = Setting::getFromName('send_wallet_sms_for_new_order') ? true : false;
+			$service = new WalletService($this->order->customer);
+
+			$service->withdraw(
+				$fromWalletAmount,
+				"کاهش موجودی کیف پول در سفارش به شناسه {$this->order->id}",
+				$useGiftBalanceToo,
+				$sendWithdrawSms,
+			);
 		}
 	}
 

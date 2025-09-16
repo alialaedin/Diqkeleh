@@ -34,8 +34,8 @@
 	@php
 		$walletData = [
 			['title' => 'موجودی کیف پول (تومان)', 'value' => number_format($customer->wallet->balance), 'color' => 'primary', 'icon' => 'dollar'],
-			['title' => 'تعداد برداشت', 'value' => $customer->deposits_count, 'color' => 'success', 'icon' => 'money'],
-			['title' => 'تعداد شارژ', 'value' => $customer->withdraws_count, 'color' => 'danger', 'icon' => 'credit-card'],
+			['title' => 'تعداد شارژ', 'value' => $customer->deposits_count, 'color' => 'success', 'icon' => 'money'],
+			['title' => 'تعداد برداشت', 'value' => $customer->withdraws_count, 'color' => 'danger', 'icon' => 'credit-card'],
 		];
 	@endphp
 

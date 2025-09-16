@@ -9,6 +9,8 @@ use Modules\Core\Exceptions\ValidationException;
 use Modules\Order\Enums\OrderStatus;
 use Modules\Order\Models\Order;
 use Modules\Order\Models\OrderItem;
+use Modules\Setting\Models\Setting;
+use Modules\Sms\Sms;
 use Modules\Store\Enums\StoreType;
 use Modules\Store\Services\BalanceChangerService;
 
@@ -49,6 +51,8 @@ class OrderUpdaterService
 
 		if ($newStatus == OrderStatus::CANCELED->value) {
 			$this->cancelActiveItems();
+		} else if ($newStatus == OrderStatus::DELIVERED->value) {
+			$this->sendSms(OrderStatus::DELIVERED);
 		}
 	}
 
@@ -62,6 +66,32 @@ class OrderUpdaterService
 				"به دلیل کنسل شدن سفارش به شناسه {$this->order->id}"
 			);
 		});
+		$this->sendSms(OrderStatus::CANCELED);
+	}
+
+	private function sendSms(OrderStatus $newStatus)
+	{
+		$status = $newStatus->value;
+		
+		$smsSettings = [
+			OrderStatus::CANCELED->value => ['key' => 'order_canceled', 'setting' => 'send_canceled_order_sms'],
+			OrderStatus::DELIVERED->value => ['key' => 'order_delivered', 'setting' => 'send_delivered_order_sms'],
+		];
+
+		if (!isset($smsSettings[$status])) {
+			return;
+		}
+
+		$key = $smsSettings[$status]['key'];
+		$sendSms = Setting::getFromName($smsSettings[$status]['setting']);
+
+		if (app()->isProduction() && $sendSms && !empty($this->order?->customer?->mobile)) {
+			$pattern = config('sms-patterns.' . $key);
+			Sms::pattern($pattern)
+				->data(['token' => $this->order->id])
+				->to([$this->order->customer->mobile])
+				->send();
+		}
 	}
 
 	public function addItem(): void

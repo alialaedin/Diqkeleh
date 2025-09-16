@@ -12,14 +12,34 @@ class SettingDatabaseSeeder extends Seeder
 	{
 		$data = [
 			[
-				'type' => SettingType::TIME,
-				'name' => 'daily_balance_charger_run_time',
-				'label' => 'ساعت شاژ روزانه محصول',
-			],
-			[
 				'type' => SettingType::PRICE,
 				'name' => 'default_shipping_amount',
 				'label' => 'هزینه ارسال (تومان)',
+				'value' => 0
+			],
+			[
+				'type' => SettingType::BOOLEAN,
+				'name' => 'send_wallet_sms_for_new_order',
+				'label' => 'ارسال اس ام اس برداشت کیف پول در سفارش جدید',
+				'value' => 0
+			],
+			[
+				'type' => SettingType::BOOLEAN,
+				'name' => 'use_gift_balance_in_order',
+				'label' => 'استفاده از کیف پول هدیه در خرید',
+				'value' => 1
+			],
+			[
+				'type' => SettingType::BOOLEAN,
+				'name' => 'send_delivered_order_sms',
+				'label' => 'ارسال اس ام اس سفارش ارسال شده',
+				'value' => 0
+			],
+			[
+				'type' => SettingType::BOOLEAN,
+				'name' => 'send_canceled_order_sms',
+				'label' => 'ارسال اس ام اس سفارش کنسل شده',
+				'value' => 0
 			],
 		];
 

@@ -43,7 +43,8 @@
 						</x-col>
 						@if ($setting->file)
 							<x-col md="6" lg="3" xl="3">
-								<button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('delete-image-{{ $setting->id }}')">
+								<button type="button" class="btn btn-danger btn-sm"
+									onclick="confirmDelete('delete-image-{{ $setting->id }}')">
 									<i class="fe fe-trash"></i>
 								</button>
 								<x-delete-button :model="$setting" route="admin.settings.delete-file" />
@@ -75,7 +76,11 @@
 					@foreach ($settingTypes[\Modules\Setting\Enums\SettingType::BOOLEAN->value] as $setting)
 						<x-col md="6" lg="3" xl="3">
 							<x-form-group>
-								<x-checkbox :name="$setting->name" :title="$setting->label" :is-checked="$setting->value" />
+								<x-label :text="$setting->label" :for="$setting->name" class="font-weight-bold" />
+									<select name="{{ $setting->name}}" id="{{ $setting->name }}" class="form-control fs-12" style="height: 2.0rem !important;">
+										<option value="on" @selected($setting->value)>فعال</option>
+										<option value="off" @selected(!$setting->value)>غیر فعال</option>
+									</select>
 							</x-form-group>
 						</x-col>
 					@endforeach
@@ -108,14 +113,28 @@
 				</x-row>
 			@endif
 
+			@if ($settingTypes->has(\Modules\Setting\Enums\SettingType::PRICE->value))
+				<x-row>
+					@foreach ($settingTypes[\Modules\Setting\Enums\SettingType::PRICE->value] as $setting)
+						<x-col md="6" lg="3" xl="3">
+							<x-form-group>
+								<x-label :text="$setting->label" :for="$setting->name" class="font-weight-bold" />
+								<x-input type="text" :id="$setting->name" :name="$setting->name" class="comma"
+									:default-value="number_format($setting->value)" />
+							</x-form-group>
+						</x-col>
+					@endforeach
+				</x-row>
+			@endif
+
 		</x-form>
 	</x-card>
 
 	@foreach ($settingTypes as $type => $settings)
 		@if ($type == \Modules\Setting\Enums\SettingType::IMAGE->value)
 			@foreach ($settings as $setting)
-				<form action="{{ route('admin.settings.delete-file', $setting) }}"
-					id="delete-image-{{ $setting->id }}" method="POST" class="d-none">
+				<form action="{{ route('admin.settings.delete-file', $setting) }}" id="delete-image-{{ $setting->id }}" method="POST"
+					class="d-none">
 					@csrf
 					@method('DELETE')
 				</form>
@@ -124,6 +143,7 @@
 	@endforeach
 
 	@push('scripts')
+		@stack('SelectComponentScripts')
 		@stack('dateInputScriptStack')
 		@stack('timeInputScriptStack')
 	@endpush

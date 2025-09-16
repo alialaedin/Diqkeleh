@@ -32,14 +32,16 @@ class CustomerSearchController extends Controller
 			'mobile' => ['required', 'numeric', 'digits:11', 'starts_with:09']
 		]);
 
-		$isNew = !Customer::whereMobile($request->mobile)->exists();
+		$isNew = !Customer::query()->where('mobile', $request->mobile)->exists();
 		$customer = Customer::query()->firstOrCreate(
 			['mobile' => $request->mobile],
 			[
 				'first_name' => '',
 				'last_name' => ''
 			]
-		)->load('addresses');
+		)
+		->refresh()
+		->load('addresses', 'wallet');
 
 		return response()->success('مشتری', compact(['customer', 'isNew']));
 	}

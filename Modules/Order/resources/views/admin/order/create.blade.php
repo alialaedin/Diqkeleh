@@ -192,8 +192,18 @@
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
+            <b class="fs-12">تخفیف روی سفارش :</b>
+            <span class="fs-12">@{{ finalPrices.discountOnOrder.toLocaleString() }} تومان</span>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <b class="fs-12">هزینه ارسال :</b>
+            <span class="fs-12">@{{ finalPrices.shippingAmount.toLocaleString() }} تومان</span>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
             <b class="fs-12">مبلغ قابل پرداخت :</b>
-            <span class="fs-12">@{{ finalPrices.finalAmount.toLocaleString() }} تومان</span>
+            <span class="fs-12 text-primary fs-15">@{{ finalPrices.finalAmount.toLocaleString() }} تومان</span>
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
@@ -225,7 +235,9 @@
     </x-col>
 
     <x-col class="text-center">
-      <button type="button" @click="store" class="btn btn-success" :disabled="isStoreButtonDisabled">ثبت سفارش</button>
+      <button type="button" @click="store" class="btn btn-success mx-2" :disabled="isStoreButtonDisabled">ثبت
+        سفارش</button>
+      <button type="button" @click="print" class="btn btn-purple mx-2">پرینت</button>
     </x-col>
 
     <div style="margin-top: 80px"></div>
@@ -538,9 +550,17 @@
               }
             });
           },
+          print() {
+            window.print();
+          },
           store() {
 
             const fromWalletAmount = Number(this.fromWalletAmount?.replace(/,/g, "") ?? 0);
+
+            if (this.customer == null) {
+              this.popup('warning', 'خطای اعتبار سنجی', 'ابتدا مشتری را انتخاب کنید');
+              return;
+            }
 
             if (fromWalletAmount > 0 && fromWalletAmount > this.customer.wallet.balance) {
               this.popup('warning', 'خطای اعتبار سنجی', 'میزان پرداختی از کیف پول بیشتر از موجودی کاربر است');
@@ -569,6 +589,7 @@
               customer_id: this.customer.id,
               address_id: this.address.id,
               courier_id: this.courier?.id ?? null,
+              from_wallet_amount: fromWalletAmount,
               description: this.description ?? null,
               first_name: this.customer.first_name,
               last_name: this.customer.last_name,
@@ -594,8 +615,7 @@
               this.request(url, 'POST', data, async (result) => {
                 console.log(result);
                 this.popup('success', '', result.message);
-                window.print();
-                window.location.replace(@json(route('admin.orders.index')));
+                // setTimeout(() => window.print(), 1000);
               });
             } catch (error) {
               console.log(error);
@@ -629,7 +649,17 @@
             if (category) {
               this.categoryProducts = this.allProducts.filter(p => p.category_id == category.id);
             }
-          }
+          },
+          'customer.first_name'(value) {
+            if (value.trim().length > 0) {
+              this.newAddress.first_name = value;
+            }
+          },
+          'customer.last_name'(value) {
+            if (value.trim().length > 0) {
+              this.newAddress.last_name = value;
+            }
+          },
         },
         computed: {
           isCustomerMobileInputDisabled() {
@@ -651,10 +681,15 @@
               products.discount += (Number(product.discount?.replace(/,/g, "") ?? 0) ?? 0) * product.quantity;
             });
 
+            const shippingAmount = Number(this.shippingAmount?.toString().replace(/,/g, "") ?? 0);
+            const discountOnOrder = Number(this.discountOnOrder?.toString().replace(/,/g, "") ?? 0);
+
             return {
               baseAmount: products.price,
               discountAmount: products.discount,
-              finalAmount: products.price - products.discount,
+              discountOnOrder,
+              shippingAmount,
+              finalAmount: products.price - products.discount - discountOnOrder + shippingAmount,
             };
 
           },

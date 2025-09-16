@@ -25,6 +25,7 @@ class OrderStoreRequest extends FormRequest
 			'courier_id' => ['bail', 'nullable', 'integer', 'exists:couriers,id'],
 			'discount_amount' => ['required', 'integer', 'min:0'],
 			'shipping_amount' => ['required', 'integer', 'min:0'],
+			'from_wallet_amount' => ['required', 'integer', 'min:0'],
 			'cash_amount' => ['nullable', 'integer', 'min:0'],
 			'card_by_card_amount' => ['nullable', 'integer', 'min:0'],
 			'pos_amount' => ['nullable', 'integer', 'min:0'],

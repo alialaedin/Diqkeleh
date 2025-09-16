@@ -9,6 +9,7 @@ enum PaymentType: string
   case POS = 'pos';
   case CARD_BY_CARD = 'card_by_card';
   case CASH = 'cash';
+  case WALLET = 'wallet';
 
   public function label(): string
   {
@@ -16,6 +17,7 @@ enum PaymentType: string
       self::POS => 'پوز',
       self::CARD_BY_CARD => 'کارت به کارت',
       self::CASH => 'نقدی',
+      self::WALLET => 'کیف پول',
     };
   }
 
@@ -25,6 +27,7 @@ enum PaymentType: string
       self::POS => 'primary',
       self::CARD_BY_CARD => 'success',
       self::CASH => 'secondary',
+      self::WALLET => 'danger',
     };
   }
 
@@ -44,6 +47,7 @@ enum PaymentType: string
       'pos_amount' => self::POS,
       'card_by_card_amount' => self::CARD_BY_CARD,
       'cash_amount' => self::CASH,
+      'from_wallet_amount' => self::WALLET,
     };
   }
 }

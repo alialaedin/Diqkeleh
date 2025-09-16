@@ -6,7 +6,6 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Modules\Product\Jobs\IncrementProductDailyBalance;
-use Modules\Setting\Models\Setting;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
@@ -32,7 +31,6 @@ return Application::configure(basePath: dirname(__DIR__))
 		//
 	})
 	->withSchedule(function (Schedule $schedule) {
-		$dailyBalanceRunTime = Setting::getFromName('daily_balance_charger_run_time');
-		$schedule->job(new IncrementProductDailyBalance)->dailyAt($dailyBalanceRunTime ?? '8:00');
+		$schedule->job(new IncrementProductDailyBalance)->dailyAt('8:00');
 	})
 	->create();

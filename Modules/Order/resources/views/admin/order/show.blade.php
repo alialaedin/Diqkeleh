@@ -8,7 +8,7 @@
     </x-breadcrumb>
 
     <div class="d-flex" style="gap: 6px;">
-      <button class="btn btn-sm btn-warning" data-target="#edit-order-modal" data-toggle="modal">ویرایش سفارش</button>
+      {{-- <button class="btn btn-sm btn-warning" data-target="#edit-order-modal" data-toggle="modal">ویرایش سفارش</button> --}}
       <button class="btn btn-sm btn-secondary" data-target="#edit-order-status-modal" data-toggle="modal">تغییر
         وضعیت</button>
       <a href="{{ route('admin.orders.print', $order) }}" target="_blank" class="btn btn-purple btn-sm">پرینت</a>
