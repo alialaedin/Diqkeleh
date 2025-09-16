@@ -338,7 +338,7 @@
             addresses: [],
             address: null,
             discountOnOrder: null,
-            shippingAmount: @json($defaultShippingAmount),
+            shippingAmount: @json(number_format($defaultShippingAmount)),
             description: '',
             showCancleCustomerButton: false,
             isStoreButtonDisabled: false,

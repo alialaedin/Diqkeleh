@@ -8,7 +8,8 @@
     </x-breadcrumb>
 
     <div class="d-flex" style="gap: 6px;">
-      {{-- <button class="btn btn-sm btn-warning" data-target="#edit-order-modal" data-toggle="modal">ویرایش سفارش</button> --}}
+      {{-- <button class="btn btn-sm btn-warning" data-target="#edit-order-modal" data-toggle="modal">ویرایش
+        سفارش</button> --}}
       <button class="btn btn-sm btn-secondary" data-target="#edit-order-status-modal" data-toggle="modal">تغییر
         وضعیت</button>
       <a href="{{ route('admin.orders.print', $order) }}" target="_blank" class="btn btn-purple btn-sm">پرینت</a>
@@ -19,6 +20,7 @@
   @php
 
     $customer = $order->customer;
+    $courier = $order->courier;
     $address = json_decode($order->address);
 
     $data = [
@@ -39,13 +41,19 @@
         'نام خانوادگی' => $address->last_name,
         'موبایل' => $address->mobile,
         'آدرس' => $address->address,
-      ]
+      ],
+      'اطلاعات پیک' => [
+        'نام' => $courier?->first_name ?? '-',
+        'نام خانوادگی' => $courier?->last_name ?? '-',
+        'موبایل' => $courier?->mobile ?? '-',
+        'نوع پیک' => $courier?->type->label() ?? '-',
+      ],
     ];
   @endphp
 
   <x-row>
     @foreach ($data as $title => $details)
-      <x-col xl="4">
+      <x-col lg="6" xl="3">
         <x-card :title="$title">
           <ul class="list-group">
             @foreach ($details as $title => $value)
