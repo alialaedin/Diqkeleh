@@ -13,13 +13,13 @@
 				<x-col lg="6" xl="3">
 					<x-form-group>
 						<x-label :is-required="true" text="عنوان (فارسی)" />
-						<x-input type="text" name="name" required autofocus />
+						<x-input type="text" name="label" required autofocus />
 					</x-form-group>
 				</x-col>
 				<x-col lg="6" xl="3">
 					<x-form-group>
 						<x-label :is-required="true" text="عنوان (انگیلیسی)" />
-						<x-input type="text" name="label" required />
+						<x-input type="text" name="name" required />
 					</x-form-group>
 				</x-col>
 				<x-col>

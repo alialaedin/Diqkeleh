@@ -47,7 +47,6 @@ class OrderCreatorService
 		$this->order = Order::create([
 			'customer_id' => $this->request->input('customer_id'),
 			'address_id' => $this->request->input('address_id'),
-			'courier_id' => $this->request->input('courier_id') ?? null,
 			'address' => $this->getAddressAsJson(),
 			'shipping_amount' => $this->request->input('shipping_amount'),
 			'discount_amount' => $this->request->input('discount_amount'),

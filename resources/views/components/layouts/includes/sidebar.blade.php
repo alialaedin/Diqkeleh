@@ -9,6 +9,10 @@
 	<div class="app-sidebar3 mt-0">
 		<ul class="side-menu">
 
+			<li class="side-item side-item-category mt-0 mb-3 px-2">
+				{{ auth()->user()->name .' - '. auth()->user()->role->label }}
+			</li>
+
 			<li class="slide">
 				<a class="side-menu__item" href="{{route("admin.dashboard")}}">
 					<i class="ti-dashboard sidemenu_icon"></i>
@@ -28,10 +32,10 @@
 						<li><a href="{{ route('admin.roles.index') }}" class="slide-item"><span>مدیریت نقش ها</span></a></li>
 						@endrole
 						@can('read_addresses')
-							<li><a href="{{ route('admin.addresses.index') }}" class="slide-item"><span>آدرس مشتریان</span></a></li>
+						<li><a href="{{ route('admin.addresses.index') }}" class="slide-item"><span>آدرس مشتریان</span></a></li>
 						@endcan
 						@can('read_units')
-							<li><a href="{{ route('admin.units.index') }}" class="slide-item"><span>واحد ها</span></a></li>
+						<li><a href="{{ route('admin.units.index') }}" class="slide-item"><span>واحد ها</span></a></li>
 						@endcan
 					</ul>
 				</li>
@@ -45,25 +49,25 @@
 					</a>
 					<ul class="slide-menu">
 						@can('read_employees')
-							<li><a href="{{ route('admin.employees.index')}}" class="slide-item">کارمندان</a></li>
+						<li><a href="{{ route('admin.employees.index')}}" class="slide-item">کارمندان</a></li>
 						@endcan
 						@can('read_salaries')
-							<li><a href="{{ route('admin.salaries.index')}}" class="slide-item">حقوق های پرداخت شده</a></li>
+						<li><a href="{{ route('admin.salaries.index')}}" class="slide-item">حقوق های پرداخت شده</a></li>
 						@endcan
 						@can('read_accounts')
-							<li><a href="{{ route('admin.accounts.index')}}" class="slide-item">حساب های بانکی</a></li>
+						<li><a href="{{ route('admin.accounts.index')}}" class="slide-item">حساب های بانکی</a></li>
 						@endcan
 					</ul>
 				</li>
 			@endcanany
 
 			@can('read_couriers')
-				<li class="slide">
-					<a class="side-menu__item" href="{{route("admin.couriers.index")}}">
-						<i class="ti-car sidemenu_icon"></i>
-						<span class="side-menu__label">مدیریت پیک ها</span>
-					</a>
-				</li>
+			<li class="slide">
+				<a class="side-menu__item" href="{{route("admin.couriers.index")}}">
+					<i class="ti-car sidemenu_icon"></i>
+					<span class="side-menu__label">مدیریت پیک ها</span>
+				</a>
+			</li>
 			@endcan
 
 			@canany(['read_customers'])
@@ -77,7 +81,7 @@
 						<li><a href="{{ route('admin.admins.index') }}" class="slide-item"><span>ادمین ها</span></a></li>
 						@endrole
 						@can('read_customers')
-							<li><a href="{{ route('admin.customers.index')}}" class="slide-item">مشتریان</a></li>
+						<li><a href="{{ route('admin.customers.index')}}" class="slide-item">مشتریان</a></li>
 						@endcan
 					</ul>
 				</li>
@@ -91,31 +95,31 @@
 					</a>
 					<ul class="slide-menu">
 						@can('read_categories')
-							<li><a href="{{ route('admin.categories.index')}}" class="slide-item">دسته بندی ها</a></li>
+						<li><a href="{{ route('admin.categories.index')}}" class="slide-item">دسته بندی ها</a></li>
 						@endcan
 						@can('read_products')
-							<li><a href="{{ route('admin.products.index') }}" class="slide-item">محصولات</a></li>
+						<li><a href="{{ route('admin.products.index') }}" class="slide-item">محصولات</a></li>
 						@endcan
 					</ul>
 				</li>
 			@endcanany
 
 			@can('read_orders')
-				<li class="slide">
-					<a class="side-menu__item" href="{{route("admin.orders.index")}}">
-						<i class="ti-shopping-cart sidemenu_icon"></i>
-						<span class="side-menu__label">سفارشات</span>
-					</a>
-				</li>
+			<li class="slide">
+				<a class="side-menu__item" href="{{route("admin.orders.index")}}">
+					<i class="ti-shopping-cart sidemenu_icon"></i>
+					<span class="side-menu__label">سفارشات</span>
+				</a>
+			</li>
 			@endcan
 
 			@can('read_payments')
-				<li class="slide">
-					<a class="side-menu__item" href="{{route("admin.payments.index")}}">
-						<i class="ti-money sidemenu_icon"></i>
-						<span class="side-menu__label">پرداختی ها</span>
-					</a>
-				</li>
+			<li class="slide">
+				<a class="side-menu__item" href="{{route("admin.payments.index")}}">
+					<i class="ti-money sidemenu_icon"></i>
+					<span class="side-menu__label">پرداختی ها</span>
+				</a>
+			</li>
 			@endcan
 
 			@canany(['read_stores', 'read_storeTransactions'])
@@ -126,22 +130,23 @@
 					</a>
 					<ul class="slide-menu">
 						@can('read_stores')
-							<li><a href="{{ route('admin.stores.index')}}" class="slide-item">موجودی محصولات</a></li>
+						<li><a href="{{ route('admin.stores.index')}}" class="slide-item">موجودی محصولات</a></li>
+						<li><a href="{{ route('admin.store-multi-charge.index')}}" class="slide-item">شارژ گروهی محصولات</a></li>
 						@endcan
 						@can('read_storeTransactions')
-							<li><a href="{{ route('admin.store-transactions.index') }}" class="slide-item">تراکنش ها</a></li>
+						<li><a href="{{ route('admin.store-transactions.index') }}" class="slide-item">تراکنش های انبار</a></li>
 						@endcan
 					</ul>
 				</li>
 			@endcanany
 
 			@can('read_walletTransactions')
-				<li class="slide">
-					<a class="side-menu__item" href="{{route("admin.wallet-transactions.index")}}">
-						<i class="ti-wallet sidemenu_icon"></i>
-						<span class="side-menu__label">کیف پول</span>
-					</a>
-				</li>
+			<li class="slide">
+				<a class="side-menu__item" href="{{route("admin.wallet-transactions.index")}}">
+					<i class="ti-wallet sidemenu_icon"></i>
+					<span class="side-menu__label">کیف پول</span>
+				</a>
+			</li>
 			@endcan
 
 			@role('super_admin')
@@ -165,13 +170,13 @@
 					</a>
 					<ul class="slide-menu">
 						@can('read_headlines')
-							<li><a href="{{route("admin.headlines.index")}}" class="slide-item">سرفصل ها</a></li>
+						<li><a href="{{route("admin.headlines.index")}}" class="slide-item">سرفصل ها</a></li>
 						@endcan
 						@can('read_expenses')
-							<li><a href="{{route("admin.expenses.index")}}" class="slide-item">هزینه ها</a></li>
+						<li><a href="{{route("admin.expenses.index")}}" class="slide-item">هزینه ها</a></li>
 						@endcan
 						@can('read_revenues')
-							<li><a href="{{route("admin.revenues.index")}}" class="slide-item">درامد ها</a></li>
+						<li><a href="{{route("admin.revenues.index")}}" class="slide-item">درامد ها</a></li>
 						@endcan
 					</ul>
 				</li>
@@ -184,13 +189,10 @@
 					<span class="side-menu__label">تنظیمات</span>
 				</a>
 			</li>
-			@endrole
-
-			@role('super_admin')
 			<li class="slide">
 				<a class="side-menu__item" href="{{route("admin.activities.index")}}">
 					<i class="ti-pulse sidemenu_icon"></i>
-					<span class="side-menu__label">لاگ فعالیت ها</span>
+					<span class=" side-menu__label">لاگ فعالیت ها</span>
 				</a>
 			</li>
 			@endrole

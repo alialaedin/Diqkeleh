@@ -46,6 +46,12 @@ class Order extends BaseModel
 		return $this->attributes['status'] == OrderStatus::NEW->value;
 	}
 
+	public function isCanceled(): bool
+	{
+		return $this->attributes['status'] == OrderStatus::CANCELED->value;
+	}
+
+
 	protected function totalAmount(): Attribute
 	{
 		return Attribute::make(
@@ -79,7 +85,7 @@ class Order extends BaseModel
 	public function loadNecessaryRelations()
 	{
 		$this->load([
-			'customer:id,first_name,last_name,mobile',
+			'customer:id,first_name,last_name,mobile,full_name',
 			'address:id,first_name,last_name,mobile,address',
 			'items',
 			'items.product:id,title',
@@ -110,5 +116,4 @@ class Order extends BaseModel
 	{
 		return $this->items()->where('status', 1);
 	}
-
 }

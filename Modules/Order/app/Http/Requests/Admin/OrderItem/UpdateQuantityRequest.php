@@ -15,10 +15,9 @@ class UpdateQuantityRequest extends FormRequest
 		];
 	}
 
-
 	protected function passedValidation()
 	{
-		$orderItem = $this->route('order_item');
+		$orderItem = $this->route('orderItem');
 
 		if ($orderItem->status == BooleanStatus::FALSE) {
 			throw new ValidationException('آیتم با وضعیت غیر فعال غیر قابل ویرایش است');

@@ -42,7 +42,7 @@
 						</td>
 					</tr>
 				@empty
-					<x-no-data :colspan="7" />
+					<x-no-data :colspan="8" />
 				@endforelse
 			</x-slot>
 		</x-table>

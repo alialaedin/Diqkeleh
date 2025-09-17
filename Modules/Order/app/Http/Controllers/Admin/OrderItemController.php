@@ -3,7 +3,6 @@
 namespace Modules\Order\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Flasher\Toastr\Laravel\Facade\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;

@@ -54,43 +54,6 @@
 
   </x-card>
 
-  <x-card title="اطلاعات سفارش" class="d-print-none">
-
-    <x-row>
-
-      <x-col xl="3">
-        <x-form-group>
-          <x-label text="تخفیف روی سفارش (تومان)" />
-          <x-input v-model="discountOnOrder" type="text" name="discountOnOrder" @input="formatNumber($event)" />
-        </x-form-group>
-      </x-col>
-
-      <x-col xl="3">
-        <x-form-group>
-          <x-label text="انتخاب پیک" />
-          <multiselect v-model="courier" :options="couriers" placeholder="انتخاب پیک" track-by="id" :show-labels="false"
-            label="full_name" class="custom-multiselect" />
-        </x-form-group>
-      </x-col>
-
-      <x-col xl="3">
-        <x-form-group>
-          <x-label text="هزینه ارسال (تومان)" />
-          <x-input v-model="shippingAmount" type="text" name="shippingAmount" @input="formatNumber($event)" />
-        </x-form-group>
-      </x-col>
-
-      <x-col>
-        <x-form-group>
-          <x-label text="یادداشت" />
-          <x-textarea rows="3" name="description" v-model="description" />
-        </x-form-group>
-      </x-col>
-
-    </x-row>
-
-  </x-card>
-
   <x-card title="انتخاب محصولات" class="d-print-none">
 
     <div class="row">
@@ -176,6 +139,43 @@
 
   </x-card>
 
+  <x-card title="اطلاعات سفارش" class="d-print-none">
+
+    <x-row>
+
+      <x-col xl="3">
+        <x-form-group>
+          <x-label text="تخفیف روی سفارش (تومان)" />
+          <x-input v-model="discountOnOrder" type="text" name="discountOnOrder" @input="formatNumber($event)" />
+        </x-form-group>
+      </x-col>
+
+      <x-col xl="3">
+        <x-form-group>
+          <x-label text="انتخاب پیک" />
+          <multiselect v-model="courier" :options="couriers" placeholder="انتخاب پیک" track-by="id" :show-labels="false"
+            label="full_name" class="custom-multiselect" />
+        </x-form-group>
+      </x-col>
+
+      <x-col xl="3">
+        <x-form-group>
+          <x-label text="هزینه ارسال (تومان)" />
+          <x-input v-model="shippingAmount" type="text" name="shippingAmount" @input="formatNumber($event)" />
+        </x-form-group>
+      </x-col>
+
+      <x-col>
+        <x-form-group>
+          <x-label text="یادداشت" />
+          <x-textarea rows="3" name="description" v-model="description" />
+        </x-form-group>
+      </x-col>
+
+    </x-row>
+
+  </x-card>
+
   <x-row v-if="selectedProducts.length" class="justify-content-center d-print-none">
     <x-col md="8" lg="6" xl="4">
       <x-card>
@@ -202,11 +202,6 @@
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
-            <b class="fs-12">مبلغ قابل پرداخت :</b>
-            <span class="fs-12 text-primary fs-15">@{{ finalPrices.finalAmount.toLocaleString() }} تومان</span>
-          </div>
-
-          <div class="d-flex justify-content-between align-items-center">
             <b class="fs-12">مبلغ کارت به کارت (تومان) :</b>
             <input v-model="cardByCardAmount" type="text" class="text-left form-control" style="width: auto"
               @input="formatNumber($event)" />
@@ -228,6 +223,11 @@
             <b class="fs-12">پرداخت از کیف پول (تومان) :</b>
             <input v-model="fromWalletAmount" type="text" class="text-left form-control" style="width: auto"
               @input="formatNumber($event)" />
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <b class="fs-12">مبلغ قابل پرداخت :</b>
+            <span class="fs-12 text-primary fs-15">@{{ finalPrices.finalAmount.toLocaleString() }} تومان</span>
           </div>
 
         </div>
@@ -638,6 +638,9 @@
               this.newAddress.last_name = customer.last_name;
               this.newAddress.mobile = customer.mobile;
               this.newAddress.customer_id = customer.id;
+              this.fromWalletAmount = customer.wallet.balance.toLocaleString();
+            } else {
+              this.fromWalletAmount = null;
             }
           },
           addresses(newVal) {
@@ -649,6 +652,7 @@
             if (category) {
               this.categoryProducts = this.allProducts.filter(p => p.category_id == category.id);
             }
+            this.product = null;
           },
           'customer.first_name'(value) {
             if (value.trim().length > 0) {

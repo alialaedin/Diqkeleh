@@ -14,6 +14,7 @@
           <th>ردیف</th>
           <th>شناسه</th>
           <th>نام و نام خانوادگی</th>
+          <th>نام کاربری</th>
           <th>شماره موبایل</th>
           <th>نقش</th>
           <th>تاریخ ثبت</th>
@@ -26,6 +27,7 @@
             <td class="font-weight-bold">{{ $loop->iteration }}</td>
             <td>{{ $admin->id }}</td>
             <td>{{ $admin->name }}</td>
+            <td>{{ $admin->username }}</td>
             <td>{{ $admin->mobile }}</td>
             <td>{{ $admin->role->label }}</td>
             <td><x-jalali-date :date="$admin->created_at" /></td>
@@ -36,7 +38,7 @@
             </td>
           </tr>
         @empty
-          <x-no-data :colspan="8" />
+          <x-no-data :colspan="9" />
         @endforelse
       </x-slot>
     </x-table>

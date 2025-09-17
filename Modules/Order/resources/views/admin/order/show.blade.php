@@ -8,11 +8,24 @@
     </x-breadcrumb>
 
     <div class="d-flex" style="gap: 6px;">
-      {{-- <button class="btn btn-sm btn-warning" data-target="#edit-order-modal" data-toggle="modal">ویرایش
-        سفارش</button> --}}
-      <button class="btn btn-sm btn-secondary" data-target="#edit-order-status-modal" data-toggle="modal">تغییر
-        وضعیت</button>
-      <a href="{{ route('admin.orders.print', $order) }}" target="_blank" class="btn btn-purple btn-sm">پرینت</a>
+      <button class="btn btn-sm btn-icon btn-lime" data-toggle="modal" data-target="#send-modal"
+        @disabled(!$order->isNew())>
+        <span>ارسال شد</span>
+        <i class="fa fa-send"></i>
+      </button>
+      <button class="pay-btn btn btn-sm btn-yellow btn-icon" data-toggle="modal" data-target="#pay-modal"
+        @disabled($order->isCanceled())>
+        <span>ثبت پرداختی</span>
+        <i class="fa fa-money"></i>
+      </button>
+      <button class="cancel-btn btn btn-sm btn-icon btn-red" @disabled(!$order->isNew())>
+        <span>کنسل شد</span>
+        <i class="fa fa-times-circle-o"></i>
+      </button>
+      <a href="{{ route('admin.orders.print', $order) }}" target="_blank" class="btn btn-purple btn-sm">
+        <span>پرینت</span>
+        <i class="fa fa-print"></i>
+      </a>
     </div>
 
   </div>
@@ -68,15 +81,13 @@
     @endforeach
   </x-row>
 
-  <x-card title="توضیحات">
-    <x-row>
-      @if ($order->description)
+  @if ($order->description)
+    <x-card title="توضیحات">
+      <x-row>
         <p>{{ $order->description }}</p>
-      @else
-        <p class="text-danger">توضیحی برای این سفارش ثبت نشده است !</p>
-      @endif
-    </x-row>
-  </x-card>
+      </x-row>
+    </x-card>
+  @endif
 
   <x-card title="اقلام سفارش">
 
@@ -249,6 +260,81 @@
     @method('PUT')
   </form>
 
+  @if ($order->status == Modules\Order\Enums\OrderStatus::NEW)
+
+    <x-modal id="send-modal" title="ارسال غذا" size="md">
+      <x-form action="{{ route('admin.orders.change-status', $order) }}" :has-default-buttons="false" method="PATCH">
+
+        <input type="hidden" name="status" value="delivered" />
+
+        <fieldset class="form-group">
+          <x-label text="انتخاب پیک" />
+          <x-select name="courier_id" :data="$couriers" option-value="id" option-label="full_name" />
+        </fieldset>
+
+        <x-row>
+          <x-col>
+            <button type="submit" class="btn btn-success btn-block">ارسال</button>
+            <button type="button" class="btn btn-danger btn-block" data-dismiss="modal">بستن</button>
+          </x-col>
+        </x-row>
+
+      </x-form>
+    </x-modal>
+
+    <x-form id="cancel-order" action="{{ route('admin.orders.change-status', $order) }}" :has-default-buttons="false"
+      method="PATCH" class="d-none">
+      <input type="hidden" name="status" value="canceled" />
+    </x-form>
+
+  @endif
+
+  @if ($order->status != Modules\Order\Enums\OrderStatus::CANCELED)
+    <x-modal id="pay-modal" title="پرداخت" size="lg">
+      <x-form action="{{ route('admin.orders.pay') }}" method="POST">
+        <x-row>
+
+          <input hidden name="customer_id" value="{{ $order->customer_id }}">
+
+          <x-col xl="6">
+            <x-form-group>
+              <x-label text="مشتری" />
+              <x-input type="text" name="" :default-value="$order->customer->full_name" readonly />
+            </x-form-group>
+          </x-col>
+
+          <x-col xl="6">
+            <x-form-group>
+              <x-label :is-required="true" text="انتخاب نوع پرداخت" />
+              <x-select name="type" :data="$payTypes" option-value="name" option-label="label" />
+            </x-form-group>
+          </x-col>
+
+          <x-col xl="6">
+            <x-form-group>
+              <x-label :is-required="true" text="میزان پرداختی (تومان)" />
+              <x-input type="text" class="comma" name="amount" :default-value="number_format($order->total_amount)" />
+            </x-form-group>
+          </x-col>
+
+          <x-col xl="6">
+            <x-form-group>
+              <x-label text="زمان پرداخت" />
+              <x-date-input id="paid_at" name="paid_at" />
+            </x-form-group>
+          </x-col>
+
+          <x-col>
+            <x-form-group>
+              <x-label text="توضیحات" />
+              <x-textarea name="description" rows="4" />
+            </x-form-group>
+          </x-col>
+        </x-row>
+      </x-form>
+    </x-modal>
+  @endif
+
   @push('scripts')
 
     @stack('SelectComponentScripts')
@@ -304,6 +390,29 @@
       $(document).ready(() => {
         updateOrderItemStatus();
         updateOrderItemQuantity();
+
+        $('.cancel-btn').click(() => {
+          Swal.fire({
+            title: "آیا مطمئن هستید؟",
+            text: "بعد از کنسل کردن سفارش دیگر نمی توانید آن را ویرایش کنید!",
+            icon: "warning",
+            showCancelButton: true,
+            showCloseButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "کنسل کردن سفارش",
+            cancelButtonText: "انصراف",
+            dangerMode: true,
+            customClass: {
+              popup: 'sweet-alert-size'
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              $('#cancel-order').submit();
+            }
+          });
+        });
+
       });
 
     </script>

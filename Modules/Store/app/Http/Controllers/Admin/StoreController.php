@@ -5,7 +5,6 @@ namespace Modules\Store\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-use Flasher\Toastr\Laravel\Facade\Toastr;
 use Modules\Category\Models\Category;
 use Modules\Product\Models\Product;
 use Modules\Store\Http\Requests\Admin\ChangeBalanceRequest;
@@ -28,7 +27,7 @@ class StoreController extends Controller implements HasMiddleware
 		$categories = Category::getCategoriesForAdmin();
 
 		$stores = Store::query()
-			->with('product:id,category_id,title', 'product.category:id,title')
+			->with(['product:id,category_id,title', 'product.category:id,title'])
 			->latest('id')
 			->filters()
 			->paginateOrAll();

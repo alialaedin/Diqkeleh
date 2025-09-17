@@ -29,7 +29,7 @@
 						<td><x-jalali-date :date="$activity->created_at" format="time" /></td>
 					</tr>
 				@empty
-					<x-no-data :colspan="5" />
+					<x-no-data :colspan="6" />
 				@endforelse
 			</x-slot>
 		</x-table>

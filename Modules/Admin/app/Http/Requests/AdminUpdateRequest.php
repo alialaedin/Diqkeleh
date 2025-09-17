@@ -13,6 +13,11 @@ class AdminUpdateRequest extends FormRequest
 	{
 		return [
 			'name' => ['required', 'string'],
+			'username' => [
+				'required',
+				'alpha_num',
+				Rule::unique('admins', 'username')->ignoreModel($this->route('admin'))
+			],
 			'mobile' => [
 				'required',
 				'numeric',

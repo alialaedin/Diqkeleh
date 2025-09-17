@@ -12,6 +12,7 @@ class AdminStoreRequest extends FormRequest
 	{
 		return [
 			'name' => ['required', 'string'],
+			'username' => ['required', 'alpha_num', 'unique:admins,username'],
 			'mobile' => ['required', 'numeric', 'unique:admins,mobile', new IranMobile()],
 			'role_id' => ['required', 'integer', 'exists:roles,id'],
 			'password' => ['required', 'string', Password::min(6), 'confirmed'],

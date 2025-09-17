@@ -9,10 +9,10 @@ use Modules\Admin\Models\Admin;
 
 trait HasAuthors
 {
-  public function bootHasAuthors()
+  public static function bootHasAuthors(): void
   {
     $user = Auth::guard(Admin::GUARD_NAME)->user();
-
+    
     if ($user && $user instanceof Admin) {
 
       static::creating(function (Model $model) use ($user): void {

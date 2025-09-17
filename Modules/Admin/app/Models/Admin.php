@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 use Modules\Core\Exceptions\ValidationException;
 use Modules\Core\Traits\HasCache;
 use Modules\Permission\Models\Role;
@@ -43,7 +44,7 @@ class Admin extends Authenticatable
 		$attributes = $request->only(['name', 'username', 'mobile']);
 
 		if ($request->filled('password')) {
-			$attributes['password'] = bcrypt($request->password);
+			$attributes['password'] = Hash::make($request->input('password'));
 		}
 
 		if ($admin) {
@@ -52,7 +53,12 @@ class Admin extends Authenticatable
 			$admin = self::create($attributes);
 		}
 
-		$admin->syncRoles(Role::findById($request->role_id));
+		$role = Role::findById($request->role_id);
+		$permissions = $role->permissions;
+
+		$admin->syncRoles($role);
+		$admin->refresh();
+		$admin->syncPermissions($permissions);
 
 		return $admin;
 	}

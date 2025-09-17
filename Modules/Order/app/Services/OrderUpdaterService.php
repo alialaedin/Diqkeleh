@@ -42,6 +42,7 @@ class OrderUpdaterService
 
 		if ($newStatus == OrderStatus::DELIVERED->value) {
 			$updateData['delivered_at'] = now();
+			$updateData['courier_id'] = $this->request->input('courier_id') ?? null;
 		}
 
 		$this->order->update($updateData);
@@ -150,7 +151,7 @@ class OrderUpdaterService
 	public function changeItemStatus(): void
 	{
 		$orderItem = $this->request->route('orderItem');
-		$newStatus = (bool) $orderItem->status;
+		$newStatus = ! (bool) $orderItem->status;
 
 		if ($orderItem->status == $newStatus) {
 			return; // no change

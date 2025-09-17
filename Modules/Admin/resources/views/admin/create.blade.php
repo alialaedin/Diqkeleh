@@ -20,6 +20,13 @@
 
         <x-col lg="6" xl="3">
           <x-form-group>
+            <x-label :is-required="true" text="نام کاربری" />
+            <x-input type="text" name="username" required />
+          </x-form-group>
+        </x-col>
+
+        <x-col lg="6" xl="3">
+          <x-form-group>
             <x-label :is-required="true" text="شماره موبایل" />
             <x-input type="text" name="mobile" required />
           </x-form-group>

@@ -22,7 +22,6 @@ class OrderStoreRequest extends FormRequest
 			],
 			'first_name' => ['required', 'string', 'min:3', 'max:190'],
 			'last_name' => ['required', 'string', 'min:3', 'max:190'],
-			'courier_id' => ['bail', 'nullable', 'integer', 'exists:couriers,id'],
 			'discount_amount' => ['required', 'integer', 'min:0'],
 			'shipping_amount' => ['required', 'integer', 'min:0'],
 			'from_wallet_amount' => ['required', 'integer', 'min:0'],

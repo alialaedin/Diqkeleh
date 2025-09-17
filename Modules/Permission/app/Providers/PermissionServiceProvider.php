@@ -36,7 +36,7 @@ class PermissionServiceProvider extends ServiceProvider
 	private function registerSuperAdminGate()
 	{
 		Gate::before(function (Authenticatable $user, $ability) {
-			return $user->isSuperAdmin();
+			return $user->isSuperAdmin() ? true : null;
 		});
 	}
 

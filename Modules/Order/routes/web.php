@@ -14,6 +14,7 @@ Route::adminSuperGroup(function () {
 		Route::post('/', [OrderController::class, 'store'])->name('store');
 		Route::patch('/{order}', [OrderController::class, 'update'])->name('update');
 		Route::patch('/{order}/change-status', [OrderController::class, 'changeStatus'])->name('change-status');
+		Route::post('/pay', [OrderController::class, 'pay'])->name('pay');
 	});
 
 	Route::prefix('/order-items')->name('order-items.')->group(function () {
