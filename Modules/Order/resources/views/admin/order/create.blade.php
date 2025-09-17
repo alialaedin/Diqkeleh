@@ -235,9 +235,9 @@
     </x-col>
 
     <x-col class="text-center">
-      <button type="button" @click="store" class="btn btn-success mx-2" :disabled="isStoreButtonDisabled">ثبت
-        سفارش</button>
-      <button type="button" @click="print" class="btn btn-purple mx-2">پرینت</button>
+      <button type="button" @click="store" class="btn btn-sm btn-success mx-2" :disabled="isStoreButtonDisabled">ثبت سفارش</button>
+      <button type="button" @click="print" class="btn btn-sm btn-purple mx-2">پرینت</button>
+      <button type="button" @click="reset" class="btn btn-sm btn-red mx-2">ریست</button>
     </x-col>
 
     <div style="margin-top: 80px"></div>
@@ -552,6 +552,9 @@
           },
           print() {
             window.print();
+          },
+          reset() {
+            window.location.reload();
           },
           store() {
 
