@@ -34,12 +34,15 @@ class Product extends BaseModel
 		'discount',
 		'discount_type',
 		'discount_until',
-		'daily_balance'
+		'has_daily_balance'
 	];
 
 	protected $appends = ['final_price', 'discount_amount'];
 	protected $with = ['category'];
-	protected $attributes = ['status' => ProductStatus::DRAFT];
+	protected $attributes = [
+		'status' => ProductStatus::DRAFT,
+		'has_daily_balance' => 0
+	];
 	protected $casts = [
 		'status' => ProductStatus::class,
 		'discount_type' => ProductDiscountType::class,

@@ -26,6 +26,7 @@ return new class extends Migration
 			$table->enum('discount_type', ProductDiscountType::cases())->nullable();
 			$table->timestamp('discount_until')->nullable();
 			$table->unsignedInteger('daily_balance')->nullable();
+			$table->boolean('has_daily_balance')->default(0);
 			$table->timestamps();
 		});
 	}

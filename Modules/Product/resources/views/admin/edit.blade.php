@@ -79,10 +79,9 @@
 					</x-form-group>
 				</x-col>
 
-				<x-col lg="6" xl="3">
+				<x-col>
 					<x-form-group>
-						<x-label text="شارژ روزانه" />
-						<x-input type="number" name="daily_balance" :default-value="$product->daily_balance" />
+						<x-checkbox title="نمایش در جدول شارژ روزانه" name="has_daily_balance" :is-checked="$product->has_daily_balance" />
 					</x-form-group>
 				</x-col>
 

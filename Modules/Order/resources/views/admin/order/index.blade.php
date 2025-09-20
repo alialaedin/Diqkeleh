@@ -83,7 +83,11 @@
 						<td>
 							<x-badge :text="$order->id" type="dark" />
 						</td>
-						<td>{{ $order->customer->full_name . ' - ' . $order->customer->mobile }}</td>
+						<td>
+							<a href="{{ route('admin.customers.show', $order->customer) }}">
+								{{ $order->customer->full_name . ' - ' . $order->customer->mobile }}
+							</a>
+						</td>
 						<td>{{ number_format($order->total_items_amount) }}</td>
 						<td>{{ number_format($order->shipping_amount) }}</td>
 						<td>{{ number_format($order->discount_amount) }}</td>

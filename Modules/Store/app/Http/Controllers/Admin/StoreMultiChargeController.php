@@ -23,7 +23,9 @@ class StoreMultiChargeController extends Controller implements HasMiddleware
 
 	public function index()
 	{
-		$products = Product::getAllProducts()->load('store:id,product_id,balance');
+		$products = Product::getAllProducts()
+			->filter(fn(Product $p) => $p->has_daily_balance)
+			->load('store:id,product_id,balance');
 
 		return view('store::multi-charge.index', compact('products'));
 	}
