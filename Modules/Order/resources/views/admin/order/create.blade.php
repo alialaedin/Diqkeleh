@@ -599,13 +599,8 @@
               return;
             }
 
-            if (this.customer.first_name.trim().length == 0) {
+            if (this.customer.full_name?.trim().length == 0) {
               this.popup('warning', 'خطای اعتبار سنجی', 'نام مشتری وارد نشده است');
-              return;
-            }
-
-            if (this.customer.last_name.trim().length == 0) {
-              this.popup('warning', 'خطای اعتبار سنجی', 'نام خانوادگی مشتری وارد نشده است');
               return;
             }
 
