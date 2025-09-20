@@ -60,9 +60,11 @@ class OrderController extends Controller implements HasMiddleware
 
 	public function store(OrderStoreRequest $request)
 	{
-		DB::transaction(fn() => (new OrderCreatorService($request))->store());
+		$order = DB::transaction(fn() => (new OrderCreatorService($request))->store());
+
 		if ($request->wantsJson()) {
-			return response()->success('سفارش جدید با موفقیت ایجاد شد');
+			$order->append('shamsi_created_at');
+			return response()->success('سفارش جدید با موفقیت ایجاد شد', compact('order'));
 		}
 
 		return redirect()->back()->with('status', 'سفارش جدید با موفقیت ایجاد شد');

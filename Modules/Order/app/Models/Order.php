@@ -66,6 +66,13 @@ class Order extends BaseModel
 		);
 	}
 
+	protected function shamsiCreatedAt(): Attribute
+	{
+		return Attribute::make(
+			get: fn(): string => verta($this->attributes['created_at'])->format('Y/m/d')
+		);
+	}
+
 	#[Scope]
 	protected function filters(Builder $query)
 	{

@@ -41,6 +41,12 @@ class OrderStoreRequest extends FormRequest
 	protected function passedValidation()
 	{
 		(new OrderValidationService($this))->validate();
+
+		if ($this->is_in_person) {
+			$this->merge([
+				'address_id' => null,
+			]);
+		}
 	}
 
 	public function authorize(): bool

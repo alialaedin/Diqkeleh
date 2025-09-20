@@ -22,7 +22,7 @@ class OrderCreatorService
 
 	public function __construct(private readonly OrderStoreRequest $request) {}
 
-	public function store(): void
+	public function store(): Order
 	{
 		DB::transaction(function () {
 			$this->updateCustomer();
@@ -34,6 +34,8 @@ class OrderCreatorService
 		});
 
 		(new ActivityLogHelper($this->order))->created();
+
+		return $this->order;
 	}
 
 	private function updateCustomer()

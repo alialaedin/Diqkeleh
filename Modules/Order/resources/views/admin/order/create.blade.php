@@ -59,7 +59,7 @@
 
   </x-card>
 
-  <div class="row">
+  <div class="row d-print-none">
 
     <div class="col-md-12 col-xl-3">
       <div class="card">
@@ -280,41 +280,77 @@
 
   </x-row>
 
-  <div v-if="selectedProducts.length" class="table-responsive d-none d-print-block">
-    <div class="dataTables_wrapper dt-bootstrap4 no-footer">
-      <div class="row">
-        <table class="table table-vcenter table-striped text-nowrap table-bordered text-center border-bottom">
-          <thead class="thead-dark">
-            <tr>
-              <th>ردیف</th>
-              <th>عنوان</th>
-              <th>قیمت</th>
-              <th>تخفیف</th>
-              <th>تعداد</th>
-              <th>جمع کل</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(product, index) in selectedProducts" :key="index">
-              <td class="font-weight-bold">@{{ index + 1 }}</td>
-              <td>@{{ product.title }}</td>
-              <td>@{{ Number(product.price?.replace(/,/g, "") ?? 0).toLocaleString() }}</td>
-              <td>@{{ Number(product.discount?.replace(/,/g, "") ?? 0).toLocaleString() }}</td>
-              <td>@{{ product.quantity }}</td>
-              <td>@{{ productFinalPrices[index].toLocaleString() }}</td>
-            </tr>
-            <tr>
-              <td colspan="2">جمع کل</td>
-              <td>@{{ finalPrices.baseAmount.toLocaleString() }}</td>
-              <td>@{{ finalPrices.discountAmount.toLocaleString() }}</td>
-              <td>@{{ selectedProducts.reduce((sum, product) => sum + product.quantity, 0) }}</td>
-              <td>@{{ finalPrices.finalAmount.toLocaleString() }}</td>
-            </tr>
-          </tbody>
-        </table>
+  <section class="section-print my-5 d-none d-print-block">
+    <h2 class=" mb-4">شماره سفارش: @{{ createdOrder?.id }}</h2>
+    <div class="d-flex flex-column">
+      <div clas="d-flex align-items-center">
+        <span class="fs-13">تاریخ: </span>
+        <time class="font-weight-bold fs-14">@{{ createdOrder?.shamsi_created_at }}</time>
+      </div>
+      <div clas="d-flex align-items-center">
+        <span class="fs-13">شماره فاکتور: </span>
+        <span class="font-weight-bold fs-14">@{{ createdOrder?.id }}</span>
+      </div>
+      <div clas="d-flex align-items-center">
+        <span class="fs-13">موبایل مشتری: </span>
+        <span class="font-weight-bold fs-14">@{{ customerMobile }}</span>
       </div>
     </div>
-  </div>
+    <h3 class="section-title text-center p-1 mt-4">اقلام سفارش</h3>
+    <table class="print-table table d-table w-100">
+      <thead>
+        <tr>
+          <th>ردیف</th>
+          <th>عنوان</th>
+          <th>تعداد</th>
+          <th>قیمت</th>
+          <th>تخفیف</th>
+          <th>جمع کل</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(product, index) in selectedProducts" :key="index">
+          <td>@{{ index + 1 }}</td>
+          <td>@{{ product.title }}</td>
+          <td>@{{ product.quantity }}</td>
+          <td>@{{ Number(product.price?.replace(/,/g, "") ?? 0).toLocaleString() }}</td>
+          <td>@{{ Number(product.discount?.replace(/,/g, "") ?? 0).toLocaleString() }}</td>
+          <td>@{{ productFinalPrices[index].toLocaleString() }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <table v-if="selectedProducts.length" class="print-table table d-table w-100">
+      <tbody>
+        <tr>
+          <td>تعداد کالا</td>
+          <td>@{{ selectedProducts.reduce((sum, product) => sum + product.quantity, 0) }}</td>
+        </tr>
+        <tr>
+          <td>مجموع قیمت کالا (تومان)</td>
+          <td>@{{ finalPrices.baseAmount.toLocaleString() }}</td>
+        </tr>
+        <tr>
+          <td>تخفیف (تومان)</td>
+          <td>@{{ finalPrices.discountAmount.toLocaleString() }}</td>
+        </tr>
+        <tr>
+          <td>از پوز (تومان)</td>
+          <td>@{{ finalPrices.finalAmount.toLocaleString() }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div v-if="!isOrderInPerson" class="d-flex flex-column" style="gap: 4px">
+      <div clas="d-flex align-items-center">
+        <span class="fs-13">محدوده: </span>
+        <time class="font-weight-bold fs-14">@{{ address?.range.title }}</span>
+      </div>
+      <div clas="d-flex align-items-center">
+        <span class="fs-13">آدرس: </span>
+        <span class="font-weight-bold fs-14">@{{ address?.address }}</span>
+      </div>
+    </div>
+    <div v-if="createdOrder?.description" class="mt-3">@{{ createdOrder?.description }}</div>
+  </section>
 
   <x-modal id="new-address-modal" title="ثبت آدرس جدید">
     <x-row>
@@ -335,8 +371,7 @@
         <x-form-group>
           <x-label :is-required="true" text="آدرس" />
           <x-textarea rows="3" name="address" v-model="newAddress.address" />
-        </x-form-group>
-      </x-col>
+        </x-form-group> </x-col>
       <x-col>
         <button type="button" class="btn btn-sm btn-primary btn-block" @click="storeNewAddress">ثبت و ذخیره</button>
       </x-col>
@@ -383,11 +418,13 @@
             categories: @json($categories),
             category: null,
             products: @json($products),
+            shippingAmount: 0,
             cardByCardAmount: null,
             cashAmount: null,
             posAmount: null,
             fromWalletAmount: 0,
             isOrderInPerson: false,
+            createdOrder: null,
             newAddress: {
               mobile: null,
               address: null,
@@ -518,6 +555,19 @@
             onSuccessRequest(result);
           },
           searchCustomer() {
+
+            if (!/^[0-9]+$/.test(this.customerMobile)) {
+              this.popup('warning', 'خطای اعتبار سنجی', 'شماره همراه باید فقط عدد باشد');
+              this.customerMobile = '';
+              return;
+            }
+
+            if (!this.customerMobile.startsWith("09")) {
+              this.popup('warning', 'خطای اعتبار سنجی', 'شماره همراه باید با 09 شروع شود');
+              this.customerMobile = '';
+              return;
+            }
+
             const url = `${this.customerSearchUrl}?mobile=${encodeURIComponent(this.customerMobile)}`;
             this.request(url, 'GET', null, async (result) => {
               this.showCancleCustomerButton = true;
@@ -639,8 +689,9 @@
 
             try {
               this.request(url, 'POST', data, async (result) => {
-                console.log(result);
-                this.popup('success', '', result.message);
+                this.createdOrder = result.data.order;
+                setTimeout(() => this.print(), 100);
+                // this.popup('success', '', result.message);
               });
             } catch (error) {
               console.log(error);
@@ -651,6 +702,11 @@
           },
         },
         watch: {
+          address(value) {
+            if (value) {
+              this.shippingAmount = value?.range.shipping_amount.toLocaleString() ?? 0;
+            }
+          },
           isOrderInPerson(newVal) {
             console.log(newVal);
           },
@@ -687,9 +743,6 @@
           },
         },
         computed: {
-          shippingAmount() {
-            return this.address?.range.shipping_amount.toLocaleString() ?? 0;
-          },
           selectedProducts() {
             return this.products.filter(p => p.quantity > 0) ?? [];
           },
@@ -772,6 +825,57 @@
       label,
       input {
         font-size: 12px !important;
+      }
+    </style>
+
+    <style>
+      .section-print {
+        padding: 70px;
+      }
+
+      @media (max-width:1100px) {
+        .section-print {
+          padding: 50px;
+        }
+      }
+
+      @media (max-width:680px) {
+        .section-print {
+          padding: 25px;
+        }
+      }
+
+      .print-table {
+        display: table;
+      }
+
+      .print-table td {
+        border: 1px solid #cdcbcb;
+        padding: 5px 10px;
+        vertical-align: top;
+        font-size: 14px;
+        text-align: center;
+      }
+
+      .print-table th {
+        border: 1px solid #cdcbcb;
+        background: #f0f0f0;
+        font-weight: bold;
+        text-align: right;
+        padding: 5px 10px;
+        text-align: center;
+      }
+
+      .btn-print {
+        background-color: rgb(0, 102, 255);
+        color: white;
+        border-radius: 10px;
+      }
+
+      .section-title {
+        background-color: gray;
+        color: white;
+        margin-bottom: 10px;
       }
     </style>
 

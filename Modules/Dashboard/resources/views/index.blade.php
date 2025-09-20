@@ -11,7 +11,8 @@
   <div class="row">
     <div class="col-xl-6 col-lg-12 col-md-12">
       <x-card title="سفارشات حضوری">
-        <div class="table-responsive attendance_table mt-4 border-top text-center fs-12 table-sm">
+        <div class="table-responsive attendance_table mt-4 border-top text-center fs-12 table-sm"
+          style="min-height: 300px; max-height: 300px; overflow-y: auto;">
           <table class="table mb-0 text-nowrap">
             <thead>
               <tr>
@@ -42,6 +43,10 @@
                       data-original-title="کنسل کردن سفارش" data-id="{{ $order->id }}" @disabled(!$order->isNew())>
                       <i class="fa fa-times-circle-o"></i>
                     </button>
+                    <a href="{{ route('admin.orders.show', $order) }}" target="_blank"
+                      class="btn btn-sm btn-icon btn-cyan" data-toggle="tooltip" data-original-title="مشاهده">
+                      <i class="fa fa-eye"></i>
+                    </a>
                   </td>
                 </tr>
               @endforeach
@@ -52,7 +57,8 @@
     </div>
     <div class="col-xl-6 col-lg-12 col-md-12">
       <x-card title="سفارشات تلفنی">
-        <div class="table-responsive attendance_table mt-4 border-top text-center fs-12 table-sm">
+        <div class="table-responsive attendance_table mt-4 border-top text-center fs-12 table-sm"
+          style="min-height: 300px; max-height: 300px; overflow-y: auto;">
           <table class="table mb-0 text-nowrap">
             <thead>
               <tr>
@@ -76,13 +82,17 @@
                   <td>{{ $order->created_at->diffForHumans() }}</td>
                   <td>
                     <button class="send-btn btn btn-sm btn-icon btn-lime" data-toggle="tooltip"
-                      data-original-title="ارسال" data-id="{{ $order->id }}" @disabled(!$order->isNew())>
+                      data-original-title="ارسال" data-id="{{ $order->id }}">
                       <i class="fa fa-send"></i>
                     </button>
                     <button class="cancel-btn btn btn-sm btn-icon btn-red" data-toggle="tooltip"
-                      data-original-title="کنسل کردن سفارش" data-id="{{ $order->id }}" @disabled(!$order->isNew())>
+                      data-original-title="کنسل کردن سفارش" data-id="{{ $order->id }}">
                       <i class="fa fa-times-circle-o"></i>
                     </button>
+                    <a href="{{ route('admin.orders.show', $order) }}" target="_blank"
+                      class="btn btn-sm btn-icon btn-cyan" data-toggle="tooltip" data-original-title="مشاهده">
+                      <i class="fa fa-eye"></i>
+                    </a>
                   </td>
                 </tr>
               @endforeach
