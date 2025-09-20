@@ -12,8 +12,15 @@ class OrderItem extends BaseModel
 {
 	protected $fillable = ['order_id', 'product_id', 'quantity', 'amount', 'discount_amount', 'status'];
 	protected $storedFields = ['total_amount'];
-	protected $appends = ['total_base_amount', 'total_discount_amount'];
+	protected $appends = ['total_base_amount', 'total_discount_amount', 'total_amount'];
 	protected $casts = ['status' => BooleanStatus::class];
+
+	protected function totalAmount(): Attribute
+	{
+		return Attribute::make(
+			get: fn(): int => ($this->amount - $this->discount_amount) * $this->quantity
+		);
+	}
 
 	protected function totalBaseAmount(): Attribute
 	{

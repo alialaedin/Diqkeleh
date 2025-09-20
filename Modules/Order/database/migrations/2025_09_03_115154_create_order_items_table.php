@@ -21,7 +21,6 @@ return new class extends Migration
 			$table->unsignedInteger('quantity');
 			$table->unsignedBigInteger('amount');
 			$table->unsignedBigInteger('discount_amount')->default(0);
-			$table->unsignedBigInteger('total_amount')->storedAs("ABS(amount - discount_amount) * quantity");
 			$table->boolean('status')->default(BooleanStatus::TRUE);
 			$table->timestamps();
 		});
