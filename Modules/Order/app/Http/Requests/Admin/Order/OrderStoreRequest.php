@@ -22,8 +22,7 @@ class OrderStoreRequest extends FormRequest
 				})
 			],
 			'is_in_person' => ['required', 'boolean'],
-			'first_name' => ['required', 'string', 'min:3', 'max:190'],
-			'last_name' => ['required', 'string', 'min:3', 'max:190'],
+			'full_name' => ['required', 'string', 'min:3', 'max:190'],
 			'discount_amount' => ['required', 'integer', 'min:0'],
 			'shipping_amount' => ['required', 'integer', 'min:0'],
 			'from_wallet_amount' => ['required', 'integer', 'min:0'],

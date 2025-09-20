@@ -618,8 +618,7 @@
               is_in_person: this.isOrderInPerson,
               from_wallet_amount: fromWalletAmount,
               description: this.description ?? null,
-              first_name: this.customer.first_name,
-              last_name: this.customer.last_name,
+              full_name: this.customer.full_name,
               products: [],
             };
 
