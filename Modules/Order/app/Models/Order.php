@@ -85,8 +85,8 @@ class Order extends BaseModel
 	public function loadNecessaryRelations()
 	{
 		$this->load([
-			'customer:id,first_name,last_name,mobile,full_name',
-			'address:id,first_name,last_name,mobile,address',
+			'customer',
+			'address',
 			'items',
 			'items.product:id,title',
 		]);

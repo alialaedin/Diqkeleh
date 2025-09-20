@@ -45,15 +45,15 @@
       ],
       'اطلاعات مشتری' => [
         'شناسه' => $customer->id,
-        'نام' => $customer->first_name,
-        'نام خانوادگی' => $customer->last_name,
+        'نام و نام خانوادگی' => $customer->full_name,
         'موبایل' => $customer->mobile,
+        'تاریخ ثبت' => verta($customer->created_at),
       ],
       'اطلاعات دریافت کننده' => [
-        'نام' => $address->first_name,
-        'نام خانوادگی' => $address->last_name,
-        'موبایل' => $address->mobile,
-        'آدرس' => $address->address,
+        'محدوده' => $address?->range->title ?? '-',
+        'موبایل' => $address?->mobile ?? '-',
+        'آدرس' => $address?->address ?? '-',
+        'کد پستی' => $address?->postal_code ?? '-',
       ],
       'اطلاعات پیک' => [
         'نام' => $courier?->first_name ?? '-',
