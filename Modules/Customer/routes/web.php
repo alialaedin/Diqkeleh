@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Customer\Http\Controllers\Admin\AddressController;
 use Modules\Customer\Http\Controllers\Admin\CustomerController;
 use Modules\Customer\Http\Controllers\Admin\CustomerSearchController;
+use Modules\Customer\Http\Controllers\Admin\RangeController;
 
 Route::adminSuperGroup(function () {
 
@@ -14,4 +15,5 @@ Route::adminSuperGroup(function () {
 
 	Route::resource('/customers', CustomerController::class);
 	Route::resource('/addresses', AddressController::class)->except('show');
+	Route::resource('/ranges', RangeController::class)->except('show');
 });

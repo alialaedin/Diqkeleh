@@ -21,15 +21,8 @@
 
 				<x-col lg="6" xl="3">
 					<x-form-group>
-						<x-label text="نام" />
+						<x-label text="نام و نام خانوادگی" />
 						<x-input type="text" name="first_name" />
-					</x-form-group>
-				</x-col>
-
-				<x-col lg="6" xl="3">
-					<x-form-group>
-						<x-label text="نام خانوادگی" />
-						<x-input type="text" name="last_name" />
 					</x-form-group>
 				</x-col>
 
@@ -72,8 +65,7 @@
 				<tr>
 					<th>ردیف</th>
 					<th>شناسه</th>
-					<th>نام</th>
-					<th>نام خانوادگی</th>
+					<th>نام و نام خانوادگی</th>
 					<th>شماره همراه</th>
 					<th>موجودی کیف پول (تومان)</th>
 					<th>وضعیت</th>
@@ -86,8 +78,7 @@
 					<tr>
 						<td class="font-weight-bold">{{ $loop->iteration }}</td>
 						<td>{{ $customer->id }}</td>
-						<td>{{ $customer->first_name }}</td>
-						<td>{{ $customer->last_name }}</td>
+						<td>{{ $customer->full_name ?? '-' }}</td>
 						<td>{{ $customer->mobile }}</td>
 						<td>{{ number_format($customer->wallet->balance) }}</td>
 						<td>

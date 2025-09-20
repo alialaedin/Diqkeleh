@@ -106,9 +106,10 @@
 				<tr>
 					<th>ردیف</th>
 					<th>شناسه</th>
-					<th>نام گیرنده</th>
-					<th>نام خانوادگی گیرنده</th>
+					<th>محدوده</th>
+					<th>آدرس</th>
 					<th>شماره همراه</th>
+					<th>کد پستی</th>
 					<th>تاریخ ثبت</th>
 				</tr>
 			</x-slot>
@@ -117,9 +118,10 @@
 					<tr>
 						<td class="font-weight-bold">{{ $loop->iteration }}</td>
 						<td>{{ $address->id }}</td>
-						<td>{{ $address->first_name }}</td>
-						<td>{{ $address->last_name }}</td>
+						<td>{{ $address->range->title }}</td>
+						<td style="white-space: nowrap">{{ $address->address }}</td>
 						<td>{{ $address->mobile }}</td>
+						<td>{{ $address->postal_code ?? '-' }}</td>
 						<td><x-jalali-date :date="$address->created_at" /></td>
 					</tr>
 				@empty

@@ -83,6 +83,11 @@ class PermissionDatabaseSeeder extends Seeder
 			['name' => 'update_accounts', 'label' => 'ویرایش حساب ها'],
 			['name' => 'delete_accounts', 'label' => 'حذف حساب ها'],
 
+			['name' => 'read_ranges', 'label' => 'نمایش محدوده ها'],
+			['name' => 'create_ranges', 'label' => 'ثبت محدوده ها'],
+			['name' => 'update_ranges', 'label' => 'ویرایش محدوده ها'],
+			['name' => 'delete_ranges', 'label' => 'حذف محدوده ها'],
+
 			['name' => 'read_stores', 'label' => 'نمایش انبار'],
 			['name' => 'update_stores', 'label' => 'بروزرسانی انبار'],
 			['name' => 'read_storeTransactions', 'label' => 'نمایش تراکنش های انبار'],

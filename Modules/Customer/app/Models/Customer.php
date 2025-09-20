@@ -22,8 +22,7 @@ class Customer extends BaseModel
 {
 	use PreventDeletionIfRelationsExist;
 
-	protected $fillable = ['first_name', 'last_name', 'mobile', 'status'];
-	protected $storedFields = ['full_name'];
+	protected $fillable = ['full_name', 'mobile', 'status'];
 	protected $with = ['wallet'];
 	protected $casts = ['status' => BooleanStatus::class];
 	protected $attributes = ['status' => BooleanStatus::TRUE];
@@ -73,11 +72,8 @@ class Customer extends BaseModel
 			->when(request()->mobile, function (Builder $q) {
 				$q->where('mobile', '=', request()->mobile);
 			})
-			->when(request()->first_name, function (Builder $q) {
-				$q->where('first_name', 'LIKE', '%' . request()->first_name . '%');
-			})
-			->when(request()->last_name, function (Builder $q) {
-				$q->where('last_name', 'LIKE', '%' . request()->last_name . '%');
+			->when(request()->full_name, function (Builder $q) {
+				$q->where('full_name', 'LIKE', '%' . request()->full_name . '%');
 			})
 			->when(request()->start_date, function (Builder $q) {
 				$q->whereDate('created_at', '>=', request()->start_date);

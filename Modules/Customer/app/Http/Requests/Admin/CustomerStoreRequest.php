@@ -17,8 +17,7 @@ class CustomerStoreRequest extends FormRequest
 	public function rules(): array
 	{
 		return [
-			'first_name' => 'nullable|string|min:3|max:120',
-			'last_name' => 'nullable|string|min:3|max:120',
+			'full_name' => 'nullable|string|min:3|max:120',
 			'mobile' => ['required', 'unique:customers', new IranMobile()],
 			'status' => ['required', 'boolean']
 		];

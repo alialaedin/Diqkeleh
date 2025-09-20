@@ -18,11 +18,9 @@
 						<select name="customer_id" id="customer_id" class="form-control fs-12">
 							<option value="">انتخاب</option>
 							@foreach ($customers as $customer)
-								<option 
-									value="{{ $customer->id }}" 
-									@selected(old('customer_id') == $customer->id || request('customer_id') == $customer->id)>
+								<option value="{{ $customer->id }}" @selected(old('customer_id') == $customer->id || request('customer_id') == $customer->id)>
 									{{ $customer->mobile . ' | ' . $customer->full_name }}
-								</option>	
+								</option>
 							@endforeach
 						</select>
 					</x-form-group>
@@ -30,15 +28,15 @@
 
 				<x-col lg="6" xl="3">
 					<x-form-group>
-						<x-label :is-required="true" text="نام" />
-						<x-input type="text" name="first_name" required autofocus />
-					</x-form-group>
-				</x-col>
-
-				<x-col lg="6" xl="3">
-					<x-form-group>
-						<x-label :is-required="true" text="نام خانوادگی" />
-						<x-input type="text" name="last_name" required />
+						<x-label :is-required="true" text="انتخاب محدوده" />
+						<select name="range_id" id="range_id" class="form-control fs-12">
+							<option value="">انتخاب</option>
+							@foreach ($ranges as $range)
+								<option value="{{ $range->id }}" @selected(old('range_id') == $range->id)>
+									{{ $range->title }}
+								</option>
+							@endforeach
+						</select>
 					</x-form-group>
 				</x-col>
 
@@ -46,6 +44,13 @@
 					<x-form-group>
 						<x-label :is-required="true" text="شماره همراه" />
 						<x-input type="text" name="mobile" required />
+					</x-form-group>
+				</x-col>
+
+				<x-col lg="6" xl="3">
+					<x-form-group>
+						<x-label text="کد پستی" />
+						<x-input type="text" name="postal_code" />
 					</x-form-group>
 				</x-col>
 
@@ -63,10 +68,8 @@
 
 	@push('scripts')
 		<script>
-			$('#customer_id').select2({
-				placeholder: 'انتخاب مشتری',
-				allowClear: true,
-			});
+			new CustomSelect('#customer_id', 'انتخاب مشتری');
+			new CustomSelect('#range_id', 'انتخاب محدوده');
 		</script>
 	@endpush
 

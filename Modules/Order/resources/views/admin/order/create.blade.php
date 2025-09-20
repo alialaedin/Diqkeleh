@@ -16,7 +16,7 @@
           <label>انتخاب مشتری <span class="text-danger">&starf;</span></label>
           <input type="text" class="form-control" v-model="customerMobile" :disabled="isCustomerMobileInputDisabled" />
         </fieldset>
-        <div v-if="showCancleCustomerButton" class="d-flex" style="gap: 8px">
+        <div v-if="showCancleCustomerButton" class="d-flex mb-4" style="gap: 8px">
           <button class="btn btn-sm btn-danger" @click="removeCustomer">لغو</button>
           <span class="badge badge-info">کیف پول : @{{ customer.wallet.balance.toLocaleString() }} تومان</span>
         </div>
@@ -26,19 +26,12 @@
 
         <div class="col-12 col-xl-3">
           <fieldset class="form-group">
-            <label>نام <span class="text-danger">&starf;</span></label>
-            <input type="text" class="form-control" v-model="customer.first_name" required />
+            <label>نام و نام خانوادگی <span class="text-danger">&starf;</span></label>
+            <input type="text" class="form-control" v-model="customer.full_name" required />
           </fieldset>
         </div>
 
-        <div class="col-12 col-xl-3">
-          <fieldset class="form-group">
-            <label>نام خانوادگی <span class="text-danger">&starf;</span></label>
-            <input type="text" class="form-control" v-model="customer.last_name" required />
-          </fieldset>
-        </div>
-
-        <div class="col-12 col-xl-3">
+        <div v-if="!isOrderInPerson" class="col-12 col-xl-3">
           <fieldset class="form-group">
             <label for="address">انتخاب آدرس <span class="text-danger">&starf;</span></label>
             <multiselect v-model="address" :options="addresses" placeholder="انتخاب آدرس" track-by="id"
@@ -52,91 +45,141 @@
 
     </div>
 
-  </x-card>
-
-  <x-card title="انتخاب محصولات" class="d-print-none">
-
     <div class="row">
-      <div class="col-12 col-xl-3">
+      <div class="col-12">
         <fieldset class="form-group">
-          <label>دسته بندی</label>
-          <multiselect v-model="category" class="custom-multiselect" label="title" placeholder="انتخاب دسته بندی"
-            :options="categories" :show-labels="false" />
-        </fieldset>
-      </div>
-      <div v-if="categoryProducts.length" class="col-12 col-xl-3">
-        <fieldset class="form-group">
-          <label>محصول</label>
-          <multiselect v-model="product" class="custom-multiselect" placeholder="انتخاب محصول"
-            :options="categoryProducts" :custom-label="productCustomLabel" :show-labels="false" @select="addProduct" />
+          <label class="custom-switch">
+            <input type="checkbox" class="custom-switch-input" v-model="isOrderInPerson">
+            <span class="custom-switch-indicator"></span>
+            <span class="custom-switch-description">تحویل حضوری</span>
+          </label>
         </fieldset>
       </div>
     </div>
 
-    <div class="row mt-5">
-      <div class="col-12">
-        <template v-if="selectedProducts.length">
-          <x-table>
-            <x-slot name="thead">
-              <tr>
-                <th>ردیف</th>
-                <th>دسته بندی</th>
-                <th>عنوان</th>
-                <th>قیمت واحد (تومان)</th>
-                <th>تخفیف واحد (تومان)</th>
-                <th>موجودی</th>
-                <th>تعداد</th>
-                <th>قیمت نهایی (تومان)</th>
-                <th>عملیات</th>
-              </tr>
-            </x-slot>
-            <x-slot name="tbody">
-              <tr v-for="(product, index) in selectedProducts" :key="index">
-                <td class="font-weight-bold">@{{ index + 1 }}</td>
-                <td>@{{ product.category.title }}</td>
-                <td>@{{ product.title }}</td>
-                <td>
-                  <input type="text" v-model="product.price" class="form-control text-center"
-                    @input="formatNumber($event)" />
-                </td>
-                <td>
-                  <input type="text" v-model="product.discount" class="form-control text-center"
-                    @input="formatNumber($event)" />
-                </td>
-                <td>@{{ product.balance }}</td>
-                <td>
-                  <button type="button" @click="decreaseCartQuantity(product)" :disabled="product.quantity == 1"
-                    class="px-1 bg-none" style="border: 1px solid #e9ebfa !important;vertical-align: top">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      viewBox="0 0 16 16" class="bi bi-dash">
-                      <path data-v-59b5239a="" d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"></path>
-                    </svg>
-                  </button>
-                  <span class="px-2">@{{ product.quantity }}</span>
-                  <button type="button" @click="increaseCartQuantity(product)"
-                    :disabled="product.quantity == product.balance" class="px-1 bg-none"
-                    style="border: 1px solid #e9ebfa !important;vertical-align: top">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      viewBox="0 0 16 16" class="bi bi-plus">
-                      <path data-v-5558c195=""
-                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z">
-                      </path>
-                    </svg>
-                  </button>
-                </td>
-                <td>@{{ productFinalPrices[index].toLocaleString() }}</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-danger" @click="removeProduct(index)">
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </td>
-              </tr>
-            </x-slot>
-          </x-table>
+  </x-card>
+
+  <div class="row">
+
+    <div class="col-md-12 col-xl-3">
+      <div class="card">
+        <div class="nav flex-column admisetting-tabs" id="settings-tab" role="tablist" aria-orientation="vertical">
+          <template v-for="(category, index) in categories">
+            <a :class="{ 'nav-link': true, 'active': index == 0 }" data-toggle="pill" :href="'#tab-' + index" role="tab"
+              aria-selected="false">
+              @{{ category.title }}
+            </a>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 col-xl-9">
+      <div class="tab-content adminsetting-content" id="setting-tabContent">
+        <template v-for="(category, index) in categories">
+          <div :class="{ 'tab-pane fade': true, 'show active': index == 0 }" :id="'tab-' + index" role="tabpanel">
+            <div class="card">
+              <div class="card-body">
+                <template v-for="(product, productIndex) in getProductsByCategoryId(category.id)">
+                  <div class="form-group">
+                    <div class="row align-items-center">
+                      <div class="col-md-3">
+                        <span class="fs-14 font-weight-bold">@{{ product.title }}</span>
+                      </div>
+                      <div class="col-md-9 d-flex align-items-center" style="gap: 8px">
+
+                        <button class="btn btn-sm btn-outline-danger" @click="decreaseCartQuantity(product)"
+                          :disabled="product.quantity == 0">کاهش</button>
+
+                        <span>@{{ product.quantity }}</span>
+
+                        <button class="btn btn-sm btn-outline-primary" @click="increaseCartQuantity(product)"
+                          :disabled="product.quantity == product.store.balance">افزایش</button>
+
+                        {{-- <button type="button" @click="decreaseCartQuantity(product)"
+                          :disabled="product.quantity == 0" class="px-1 bg-none"
+                          style="border: 1px solid #e9ebfa !important;vertical-align: top">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            viewBox="0 0 16 16" class="bi bi-dash">
+                            <path data-v-59b5239a="" d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z">
+                            </path>
+                          </svg>
+                        </button>
+                        <span class="px-2">@{{ product.quantity }}</span>
+                        <button type="button" @click="increaseCartQuantity(product)"
+                          :disabled="product.quantity == product.store.balance" class="px-1 bg-none"
+                          style="border: 1px solid #e9ebfa !important;vertical-align: top">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            viewBox="0 0 16 16" class="bi bi-plus">
+                            <path data-v-5558c195=""
+                              d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z">
+                            </path>
+                          </svg>
+                        </button> --}}
+
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
         </template>
       </div>
     </div>
 
+  </div>
+
+  <x-card v-if="selectedProducts.length" title="محصولات انتخاب شده" class="d-print-none">
+    <x-table>
+      <x-slot name="thead">
+        <tr>
+          <th>ردیف</th>
+          <th>دسته بندی</th>
+          <th>عنوان</th>
+          <th>قیمت واحد (تومان)</th>
+          <th>تخفیف واحد (تومان)</th>
+          <th>موجودی</th>
+          <th>تعداد</th>
+          <th>قیمت نهایی (تومان)</th>
+        </tr>
+      </x-slot>
+      <x-slot name="tbody">
+        <tr v-for="(product, index) in selectedProducts" :key="index">
+          <td class="font-weight-bold">@{{ index + 1 }}</td>
+          <td>@{{ product.category.title }}</td>
+          <td>@{{ product.title }}</td>
+          <td>
+            <input type="text" v-model="product.price" class="form-control text-center" v-format-number />
+          </td>
+          <td>
+            <input type="text" v-model="product.discount" class="form-control text-center" v-format-number />
+          </td>
+          <td>@{{ product.store.balance }}</td>
+          <td>
+            <button type="button" @click="decreaseCartQuantity(product)" :disabled="product.quantity == 0"
+              class="px-1 bg-none" style="border: 1px solid #e9ebfa !important;vertical-align: top">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"
+                class="bi bi-dash">
+                <path data-v-59b5239a="" d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"></path>
+              </svg>
+            </button>
+            <span class="px-2">@{{ product.quantity }}</span>
+            <button type="button" @click="increaseCartQuantity(product)"
+              :disabled="product.quantity == product.store.balance" class="px-1 bg-none"
+              style="border: 1px solid #e9ebfa !important;vertical-align: top">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"
+                class="bi bi-plus">
+                <path data-v-5558c195=""
+                  d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z">
+                </path>
+              </svg>
+            </button>
+          </td>
+          <td>@{{ productFinalPrices[index].toLocaleString() }}</td>
+        </tr>
+      </x-slot>
+    </x-table>
   </x-card>
 
   <x-card title="اطلاعات سفارش" class="d-print-none">
@@ -146,22 +189,14 @@
       <x-col xl="3">
         <x-form-group>
           <x-label text="تخفیف روی سفارش (تومان)" />
-          <x-input v-model="discountOnOrder" type="text" name="discountOnOrder" @input="formatNumber($event)" />
-        </x-form-group>
-      </x-col>
-
-      <x-col xl="3">
-        <x-form-group>
-          <x-label text="انتخاب پیک" />
-          <multiselect v-model="courier" :options="couriers" placeholder="انتخاب پیک" track-by="id" :show-labels="false"
-            label="full_name" class="custom-multiselect" />
+          <x-input v-model="discountOnOrder" type="text" name="discountOnOrder" v-format-number />
         </x-form-group>
       </x-col>
 
       <x-col xl="3">
         <x-form-group>
           <x-label text="هزینه ارسال (تومان)" />
-          <x-input v-model="shippingAmount" type="text" name="shippingAmount" @input="formatNumber($event)" />
+          <x-input v-model="shippingAmount" type="text" name="shippingAmount" v-format-number />
         </x-form-group>
       </x-col>
 
@@ -204,25 +239,25 @@
           <div class="d-flex justify-content-between align-items-center">
             <b class="fs-12">مبلغ کارت به کارت (تومان) :</b>
             <input v-model="cardByCardAmount" type="text" class="text-left form-control" style="width: auto"
-              @input="formatNumber($event)" />
+              v-format-number />
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
             <b class="fs-12">مبلغ پرداخت نقدی (تومان) :</b>
             <input v-model="cashAmount" type="text" class="text-left form-control" style="width: auto"
-              @input="formatNumber($event)" />
+              v-format-number />
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
             <b class="fs-12">پرداخت از پوز (تومان) :</b>
-            <input v-model="posAmount" type="text" class="text-left form-control" style="width: auto"
-              @input="formatNumber($event)" />
+            <input v-model="posAmount" type="text" class="text-left form-control" style="width: auto" v-format-number
+              @focus="setPosAmount" />
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
             <b class="fs-12">پرداخت از کیف پول (تومان) :</b>
             <input v-model="fromWalletAmount" type="text" class="text-left form-control" style="width: auto"
-              @input="formatNumber($event)" />
+              v-format-number />
           </div>
 
           <div class="d-flex justify-content-between align-items-center">
@@ -235,7 +270,8 @@
     </x-col>
 
     <x-col class="text-center">
-      <button type="button" @click="store" class="btn btn-sm btn-success mx-2" :disabled="isStoreButtonDisabled">ثبت سفارش</button>
+      <button type="button" @click="store" class="btn btn-sm btn-success mx-2" :disabled="isStoreButtonDisabled">ثبت
+        سفارش</button>
       <button type="button" @click="print" class="btn btn-sm btn-purple mx-2">پرینت</button>
       <button type="button" @click="reset" class="btn btn-sm btn-red mx-2">ریست</button>
     </x-col>
@@ -284,20 +320,15 @@
     <x-row>
       <x-col>
         <x-form-group>
-          <x-label :is-required="true" text="نام" />
-          <x-input type="text" name="first_name" v-model="newAddress.first_name" />
-        </x-form-group>
-      </x-col>
-      <x-col>
-        <x-form-group>
-          <x-label :is-required="true" text="نام خانوادگی" />
-          <x-input type="text" name="last_name" v-model="newAddress.last_name" />
-        </x-form-group>
-      </x-col>
-      <x-col>
-        <x-form-group>
           <x-label :is-required="true" text="شماره همراه" />
           <x-input type="text" name="mobile" v-model="newAddress.mobile" />
+        </x-form-group>
+      </x-col>
+      <x-col>
+        <x-form-group>
+          <x-label :is-required="true" text="انتخاب محدوده" />
+          <multiselect v-model="newAddress.range" :options="ranges" placeholder="انتخاب محدوده" track-by="id"
+            :show-labels="false" label="title" class="custom-multiselect" />
         </x-form-group>
       </x-col>
       <x-col>
@@ -320,54 +351,73 @@
 
     <script>
 
-      const { createApp } = Vue;
       const closeModal = (selector) => $(selector).modal('hide');
 
-      createApp({
+      Vue.createApp({
         components: {
           'multiselect': window['vue-multiselect'].default,
+        },
+        mounted() {
+          this.products = this.products.map(p => ({
+            ...p,
+            quantity: 0,
+            price: p.unit_price.toLocaleString(),
+            discount: p.discount_amount.toLocaleString(),
+          }));
         },
         data() {
           return {
             customerSearchUrl: @json(route('admin.customers.order-search')),
             createAddressUrl: @json(route('admin.addresses.store')),
-            couriers: @json($couriers),
-            courier: null,
             customerMobile: '',
             customer: null,
             addresses: [],
             address: null,
             discountOnOrder: null,
-            shippingAmount: @json(number_format($defaultShippingAmount)),
             description: '',
             showCancleCustomerButton: false,
             isStoreButtonDisabled: false,
             abortController: null,
             debounceTimeout: null,
+            ranges: @json($ranges),
             categories: @json($categories),
             category: null,
-            allProducts: @json($products),
-            categoryProducts: [],
-            selectedProducts: [],
-            product: null,
+            products: @json($products),
             cardByCardAmount: null,
             cashAmount: null,
             posAmount: null,
-            fromWalletAmount: null,
+            fromWalletAmount: 0,
+            isOrderInPerson: false,
             newAddress: {
-              first_name: null,
-              last_name: null,
               mobile: null,
               address: null,
               customer_id: null,
+              range_id: null,
+              range: null
             }
           }
         },
         methods: {
-
           formatNumber(event) {
+
             if (event.which >= 37 && event.which <= 40) return;
-            event.target.value = event.target.value.replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
+            let input = event.target;
+            let value = input.value.replace(/[^\d]/g, '');
+
+            if (value === '') {
+              input.value = '';
+              return;
+            }
+
+            let numberValue = parseInt(value, 10);
+
+            if (isNaN(numberValue)) {
+              input.value = '';
+              return;
+            }
+
+            input.value = numberValue.toLocaleString('en-US');
           },
           showValidationError(errors) {
 
@@ -483,63 +533,42 @@
             this.showCancleCustomerButton = false;
             this.address = null;
 
-            this.newAddress.first_name = null;
-            this.newAddress.last_name = null;
             this.newAddress.mobile = null;
             this.newAddress.address = null;
             this.newAddress.customer_id = null;
+            this.newAddress.range_id = null;
 
           },
 
           productCustomLabel({ id, title, store }) {
             return `${title} | موجودی: ${store.balance}`;
           },
-          addProduct() {
-
-            const selected = this.product;
-            const alreadyExists = this.selectedProducts?.some(p => p.id === selected.id);
-            if (alreadyExists) {
-              this.popup('warning', 'اخطار', 'این محصول از قبل انتخاب شده است');
-              return;
-            }
-
-            const balance = selected.store.balance;
-            const price = selected.unit_price.toLocaleString();
-            const discount = selected.discount_amount.toLocaleString();
-            const quantity = 1;
-            const newProduct = { ...selected, price, discount, balance, quantity };
-
-            if (balance === 0) {
-              this.popupWithConfirmCallback(
-                'warning',
-                'اخطار',
-                'محصول ناموجود میباشد! آیا میخواهید آن را به لیست اضافه کنید ؟',
-                'اضافه کن',
-                () => this.selectedProducts.push(newProduct)
-              );
-              return;
-            }
-
-            this.selectedProducts.push(newProduct);
-
+          removeProduct(product) {
+            product.quantity = 0;
           },
-          removeProduct(index) {
-            if (index !== -1) {
-              this.selectedProducts.splice(index, 1);
-            }
+          getProductsByCategoryId(categoryId) {
+            return this.products.filter(p => p.category_id == categoryId) ?? [];
           },
-
           increaseCartQuantity(product) {
-            if (product.quantity < product.balance) {
+            if (product.quantity < product.store.balance) {
               product.quantity = product.quantity + 1;
             }
           },
           decreaseCartQuantity(product) {
-            if (product.quantity > 1) {
+            if (product.quantity >= 1) {
               product.quantity = product.quantity - 1;
             }
           },
 
+          setPosAmount() {
+            if (!this.posAmount) {
+
+              const finalAmount = this.finalPrices.finalAmount;
+              const fromWalletAmount = Number(this.fromWalletAmount?.toString().replace(/,/g, "") ?? 0);
+
+              this.posAmount = (finalAmount - fromWalletAmount).toLocaleString();
+            }
+          },
           storeNewAddress() {
             closeModal('#new-address-modal');
             this.request(this.createAddressUrl, 'POST', this.newAddress, async (result) => {
@@ -558,7 +587,7 @@
           },
           store() {
 
-            const fromWalletAmount = Number(this.fromWalletAmount?.replace(/,/g, "") ?? 0);
+            const fromWalletAmount = Number(this.fromWalletAmount?.toString().replace(/,/g, "") ?? 0);
 
             if (this.customer == null) {
               this.popup('warning', 'خطای اعتبار سنجی', 'ابتدا مشتری را انتخاب کنید');
@@ -580,7 +609,7 @@
               return;
             }
 
-            if (this.address == null) {
+            if (!this.isOrderInPerson && this.address == null) {
               this.popup('warning', 'خطای اعتبار سنجی', 'ابتدا یک آدرس انتخاب کنید');
               return;
             }
@@ -590,8 +619,8 @@
             const url = @json(route('admin.orders.store'));
             const data = {
               customer_id: this.customer.id,
-              address_id: this.address.id,
-              courier_id: this.courier?.id ?? null,
+              address_id: this.address?.id ?? null,
+              is_in_person: this.isOrderInPerson,
               from_wallet_amount: fromWalletAmount,
               description: this.description ?? null,
               first_name: this.customer.first_name,
@@ -618,7 +647,6 @@
               this.request(url, 'POST', data, async (result) => {
                 console.log(result);
                 this.popup('success', '', result.message);
-                // setTimeout(() => window.print(), 1000);
               });
             } catch (error) {
               console.log(error);
@@ -629,6 +657,9 @@
           },
         },
         watch: {
+          isOrderInPerson(newVal) {
+            console.log(newVal);
+          },
           isCustomerMobileInputDisabled(disabled) {
             if (disabled) {
               this.searchCustomer();
@@ -637,8 +668,6 @@
           customer(customer) {
             this.addresses = customer == null ? [] : customer.addresses;
             if (customer) {
-              this.newAddress.first_name = customer.first_name;
-              this.newAddress.last_name = customer.last_name;
               this.newAddress.mobile = customer.mobile;
               this.newAddress.customer_id = customer.id;
               this.fromWalletAmount = customer.wallet.balance.toLocaleString();
@@ -657,18 +686,19 @@
             }
             this.product = null;
           },
-          'customer.first_name'(value) {
-            if (value.trim().length > 0) {
-              this.newAddress.first_name = value;
-            }
-          },
-          'customer.last_name'(value) {
-            if (value.trim().length > 0) {
-              this.newAddress.last_name = value;
+          'newAddress.range'(range) {
+            if (range != null) {
+              this.newAddress.range_id = range.id;
             }
           },
         },
         computed: {
+          shippingAmount() {
+            return this.address?.range.shipping_amount.toLocaleString() ?? 0;
+          },
+          selectedProducts() {
+            return this.products.filter(p => p.quantity > 0) ?? [];
+          },
           isCustomerMobileInputDisabled() {
             return this.customerMobile.length == 11;
           },
@@ -700,6 +730,38 @@
             };
 
           },
+        }
+      }).directive('format-number', {
+        beforeMount(el) {
+          const format = (e) => {
+            let rawValue = el.value.replace(/[^\d]/g, '');
+
+            if (!rawValue) {
+              if (el.value !== '') {
+                el.value = '';
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+              return;
+            }
+
+            let formatted = Number(rawValue).toLocaleString('en-US');
+
+            if (el.value !== formatted) {
+              let position = el.selectionStart;
+              let oldLength = el.value.length;
+              el.value = formatted;
+              let newLength = el.value.length;
+              position += newLength - oldLength;
+
+              requestAnimationFrame(() => {
+                el.setSelectionRange(position, position);
+              });
+
+              el.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+          };
+
+          el.addEventListener('input', format);
         }
       }).mount('#app')
 

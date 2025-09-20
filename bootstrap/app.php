@@ -5,7 +5,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-use Modules\Product\Jobs\IncrementProductDailyBalance;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
@@ -18,8 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
 	)
 	->withMiddleware(function (Middleware $middleware): void {
 
-		$middleware->redirectGuestsTo(fn (Request $request) => route('admin.login-form'));
-		$middleware->redirectUsersTo(fn (Request $request) => route('admin.dashboard'));
+		$middleware->redirectGuestsTo(fn(Request $request) => route('admin.login-form'));
+		$middleware->redirectUsersTo(fn(Request $request) => route('admin.dashboard'));
 
 		$middleware->alias([
 			'role' => RoleMiddleware::class,
@@ -31,6 +30,6 @@ return Application::configure(basePath: dirname(__DIR__))
 		//
 	})
 	->withSchedule(function (Schedule $schedule) {
-		$schedule->job(new IncrementProductDailyBalance)->dailyAt('8:00');
+		//
 	})
 	->create();

@@ -11,32 +11,39 @@
 		<x-form :action="route('admin.addresses.update', $address)" method="PATCH">
 
 			<x-row>
-				
+
 				<x-col lg="6" xl="3">
 					<x-form-group>
 						<x-label :is-required="true" text="انتخاب مشتری" />
-						<x-input type="text" name="s" readonly value="{{ $address->customer->full_name .' - '. $address->customer->mobile }}" />
+						<x-input type="text" readonly value="{{ $address->customer->full_name }}" name="s" />
 					</x-form-group>
 				</x-col>
 
 				<x-col lg="6" xl="3">
 					<x-form-group>
-						<x-label :is-required="true" text="نام" />
-						<x-input type="text" name="first_name" :default-value="$address->first_name" required autofocus />
+						<x-label :is-required="true" text="انتخاب محدوده" />
+						<select name="range_id" id="range_id" class="form-control fs-12">
+							<option value="">انتخاب</option>
+							@foreach ($ranges as $range)
+								<option value="{{ $range->id }}" @selected(old('range_id', $address->range_id) == $range->id)>
+									{{ $range->title }}
+								</option>
+							@endforeach
+						</select>
 					</x-form-group>
 				</x-col>
 
 				<x-col lg="6" xl="3">
-					<x-form-group>
-						<x-label :is-required="true" text="نام خانوادگی" />
-						<x-input type="text" name="last_name" :default-value="$address->last_name" required />
-					</x-form-group>
-				</x-col>
-
-        <x-col lg="6" xl="3">
 					<x-form-group>
 						<x-label :is-required="true" text="شماره همراه" />
 						<x-input type="text" name="mobile" :default-value="$address->mobile" required />
+					</x-form-group>
+				</x-col>
+
+				<x-col lg="6" xl="3">
+					<x-form-group>
+						<x-label text="کد پستی" />
+						<x-input type="text" name="postal_code" :default-value="$address->postal_code" />
 					</x-form-group>
 				</x-col>
 
@@ -51,5 +58,11 @@
 
 		</x-form>
 	</x-card>
+
+	@push('scripts')
+		<script>
+			new CustomSelect('#range_id', 'انتخاب محدوده');
+		</script>
+	@endpush
 
 </x-layouts.master>

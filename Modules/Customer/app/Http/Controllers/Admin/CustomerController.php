@@ -3,7 +3,6 @@
 namespace Modules\Customer\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Flasher\Toastr\Laravel\Facade\Toastr;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;

@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Modules\Customer\Models\Customer;
+use Modules\Customer\Models\Range;
 
 return new class extends Migration
 {
@@ -15,8 +16,7 @@ return new class extends Migration
 		Schema::create('addresses', function (Blueprint $table) {
 			$table->id();
 			$table->foreignIdFor(Customer::class)->constrained()->cascadeOnDelete();
-			$table->string('first_name', 100)->nullable();
-			$table->string('last_name', 100)->nullable();
+			$table->foreignIdFor(Range::class)->constrained()->cascadeOnDelete();
 			$table->string('mobile', 20);
 			$table->text('address');
 			$table->string('postal_code', 20)->nullable();

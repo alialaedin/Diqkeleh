@@ -2,6 +2,7 @@
 
 return [
   Modules\Admin\Models\Admin::class => 'ادمین',
+  Modules\Customer\Models\Range::class => 'محدوده',
   Modules\Area\Models\City::class => 'شهر',
   Modules\Area\Models\Province::class => 'استان',
   Modules\Product\Models\Product::class => 'محصول',

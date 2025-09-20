@@ -9,11 +9,11 @@ class AddressStoreRequest extends FormRequest
 	public function rules(): array
 	{
 		return [
-			'first_name' => 'required|string|max:191',
-			'last_name' => 'required|string|max:191',
 			'address' => 'required|string|max:500',
 			'customer_id' => 'required|integer|exists:customers,id',
-			'mobile' => 'required|string|size:11',
+			'range_id' => 'required|integer|exists:ranges,id',
+			'mobile' => 'required|numeric|digits:11',
+			'postal_code' => ['nullable', 'numeric', 'max_digits:20']
 		];
 	}
 

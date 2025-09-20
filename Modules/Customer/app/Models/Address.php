@@ -9,23 +9,18 @@ use Modules\Core\Models\BaseModel;
 
 class Address extends BaseModel
 {
-	protected $fillable = ['customer_id', 'first_name', 'last_name', 'mobile', 'address', 'postal_code'];
+	protected $fillable = ['customer_id', 'range_id', 'mobile', 'address', 'postal_code'];
+	protected $with = ['range', 'customer'];
 
 	#[Scope]
 	protected function filters(Builder $query): void
 	{
 		$query
-			->when(request()->customer_id, function (Builder $q) {
-				$q->where('customer_id', '=', request()->customer_id);
+			->when(request()->range_id, function (Builder $q) {
+				$q->where('range_id', '=', request()->range_id);
 			})
 			->when(request()->mobile, function (Builder $q) {
 				$q->where('mobile', '=', request()->mobile);
-			})
-			->when(request()->first_name, function (Builder $q) {
-				$q->where('first_name', 'LIKE', '%' . request()->first_name . '%');
-			})
-			->when(request()->last_name, function (Builder $q) {
-				$q->where('last_name', 'LIKE', '%' . request()->last_name . '%');
 			})
 			->when(request()->start_date, function (Builder $q) {
 				$q->whereDate('created_at', '>=', request()->start_date);
@@ -38,5 +33,10 @@ class Address extends BaseModel
 	public function customer(): BelongsTo
 	{
 		return $this->belongsTo(Customer::class);
+	}
+
+	public function range(): BelongsTo
+	{
+		return $this->belongsTo(Range::class);
 	}
 }

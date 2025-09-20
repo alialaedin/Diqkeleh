@@ -29,8 +29,11 @@
 					</a>
 					<ul class="slide-menu">
 						@role('super_admin')
-						<li><a href="{{ route('admin.roles.index') }}" class="slide-item"><span>مدیریت نقش ها</span></a></li>
+						<li><a href="{{ route('admin.roles.index') }}" class="slide-item"><span>نقش و مجوز ها</span></a></li>
 						@endrole
+						@can('read_ranges')
+						<li><a href="{{ route('admin.ranges.index') }}" class="slide-item"><span>محدوده ها</span></a></li>
+						@endcan
 						@can('read_addresses')
 						<li><a href="{{ route('admin.addresses.index') }}" class="slide-item"><span>آدرس مشتریان</span></a></li>
 						@endcan

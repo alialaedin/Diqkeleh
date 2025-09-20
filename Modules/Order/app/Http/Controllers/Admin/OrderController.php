@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Activity\Helpers\ActivityLogHelper;
 use Modules\Category\Models\Category;
 use Modules\Courier\Models\Courier;
+use Modules\Customer\Models\Range;
 use Modules\Order\Enums\OrderStatus;
 use Modules\Order\Http\Requests\Admin\Order\OrderChangeStatusRequest;
 use Modules\Order\Http\Requests\Admin\Order\OrderPayRequest;
@@ -50,12 +51,11 @@ class OrderController extends Controller implements HasMiddleware
 
 	public function create()
 	{
+		$ranges = Range::getAll();
 		$categories = Category::getCategoriesForAdmin();
-		$couriers = Courier::getAll();
 		$products = Product::getAllProducts()->load('store:id,product_id,balance');
-		$defaultShippingAmount = Setting::getFromName('default_shipping_amount') ?? 0;
 
-		return view('order::admin.order.create', compact(['categories', 'products', 'couriers', 'defaultShippingAmount']));
+		return view('order::admin.order.create', compact(['categories', 'products', 'ranges']));
 	}
 
 	public function store(OrderStoreRequest $request)

@@ -19,12 +19,12 @@ return new class extends Migration
 			$table->id();
 			$table->foreignIdFor(Customer::class)->constrained()->cascadeOnDelete();
 			$table->foreignIdFor(Courier::class)->nullable()->constrained()->cascadeOnDelete();
-			$table->foreignIdFor(Address::class)->constrained()->cascadeOnDelete();
+			$table->foreignIdFor(Address::class)->nullable()->constrained()->cascadeOnDelete();
 			$table->unsignedInteger('shipping_amount')->default(0);
 			$table->unsignedInteger('discount_amount')->default(0);
 			$table->enum('status', OrderStatus::cases())->default(OrderStatus::NEW);
 			$table->text('description')->nullable();
-			$table->json('address');
+			$table->json('address')->nullable();
 			$table->timestamp('delivered_at')->nullable();
 			$table->timestamps();
 		});

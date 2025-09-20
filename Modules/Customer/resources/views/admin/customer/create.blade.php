@@ -14,15 +14,8 @@
 
 				<x-col lg="6" xl="3">
 					<x-form-group>
-						<x-label :is-required="true" text="نام" />
-						<x-input type="text" name="first_name" required autofocus />
-					</x-form-group>
-				</x-col>
-
-				<x-col lg="6" xl="3">
-					<x-form-group>
-						<x-label :is-required="true" text="نام خانوادگی" />
-						<x-input type="text" name="last_name" required />
+						<x-label text="نام و نام خانوادگی" />
+						<x-input type="text" name="full_name" autofocus />
 					</x-form-group>
 				</x-col>
 

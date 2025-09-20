@@ -39,7 +39,7 @@ class OrderCreatorService
 	private function updateCustomer()
 	{
 		$customer = Customer::query()->findOrFail($this->request->input('customer_id'));
-		$customer->update($this->request->only(['first_name', 'last_name']));
+		$customer->update($this->request->only(['full_name']));
 	}
 
 	private function createOrder(): void
@@ -58,7 +58,7 @@ class OrderCreatorService
 	private function createOrderItems(): void
 	{
 		$products = $this->request->input('products', []);
-
+		
 		foreach ($products as $product) {
 
 			$item = $this->order->items()->create([
@@ -144,6 +144,6 @@ class OrderCreatorService
 		return Address::query()
 			->where('id', $this->request->input('address_id'))
 			->first()
-			->toJson();
+			?->toJson() ?? null;
 	}
 }

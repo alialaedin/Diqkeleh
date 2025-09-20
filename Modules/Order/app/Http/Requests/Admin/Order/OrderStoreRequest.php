@@ -14,12 +14,14 @@ class OrderStoreRequest extends FormRequest
 			'customer_id' => ['bail', 'required', 'integer', 'exists:customers,id'],
 			'address_id' => [
 				'bail',
-				'required',
+				'nullable',
 				'integer',
+				Rule::requiredIf(fn () => !$this->boolean('is_in_person')),
 				Rule::exists('addresses', 'id')->where(function ($query) {
 					return $query->where('customer_id', $this->customer_id);
 				})
 			],
+			'is_in_person' => ['required', 'boolean'],
 			'first_name' => ['required', 'string', 'min:3', 'max:190'],
 			'last_name' => ['required', 'string', 'min:3', 'max:190'],
 			'discount_amount' => ['required', 'integer', 'min:0'],
