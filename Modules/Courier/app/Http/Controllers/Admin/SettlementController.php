@@ -32,7 +32,8 @@ class SettlementController extends Controller
 
 		if ($requestCourierId) {
 			$orders = Courier::query()->with('orders', function ($q) {
-				$q->whereBetween('created_at', [request()->start_date, request()->end_date]);
+				$q->where('created_at', '>', Carbon::parse(request()->start_date)->subDay());
+				$q->where('created_at', '<=', request()->end_date);
 				$q->delivered();
 				$q->isNotSettled();
 				$q->with('customer:id,full_name,mobile');

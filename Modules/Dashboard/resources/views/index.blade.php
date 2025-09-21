@@ -23,7 +23,7 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($inPersonOrders as $order)
+              @forelse ($inPersonOrders as $order)
                 <tr class="border-bottom">
                   <td>
                     <span class="avatar avatar-sm brround">{{ $order->id }}</span>
@@ -49,7 +49,9 @@
                     </a>
                   </td>
                 </tr>
-              @endforeach
+              @empty
+                <x-no-data :colspan="4" />
+              @endforelse
             </tbody>
           </table>
         </div>
@@ -69,7 +71,7 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($telephoneOrders as $order)
+              @forelse ($telephoneOrders as $order)
                 <tr class="border-bottom">
                   <td>
                     <span class="avatar avatar-sm brround">{{ $order->id }}</span>
@@ -81,8 +83,8 @@
                   </td>
                   <td>{{ $order->created_at->diffForHumans() }}</td>
                   <td>
-                    <button class="send-btn btn btn-sm btn-icon btn-lime" data-toggle="tooltip"
-                      data-original-title="ارسال" data-id="{{ $order->id }}">
+                    <button class="btn btn-sm btn-icon btn-lime" data-toggle="modal"
+                      data-target="#send-sms-modal-{{ $order->id }}">
                       <i class="fa fa-send"></i>
                     </button>
                     <button class="cancel-btn btn btn-sm btn-icon btn-red" data-toggle="tooltip"
@@ -95,7 +97,9 @@
                     </a>
                   </td>
                 </tr>
-              @endforeach
+              @empty
+                <x-no-data :colspan="4" />
+              @endforelse
             </tbody>
           </table>
         </div>
@@ -152,11 +156,6 @@
         $('.send-in-person-btn').each(function () {
           $(this).click(() => {
             $('#deliver-order-' + $(this).data('id')).submit();
-          });
-        });
-        $('.send-btn').each(function () {
-          $(this).click(() => {
-            $('#send-sms-modal-' + $(this).data('id')).modal('show');
           });
         });
         $('.cancel-btn').each(function () {
