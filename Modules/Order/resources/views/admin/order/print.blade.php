@@ -133,7 +133,7 @@
           </tr>
         </thead>
         <tbody>
-          @foreach ($orders->items as $item)
+          @foreach ($order->items as $item)
             <tr>
               <td class="font-weight-bold">{{ $loop->iteration }}</td>
               <td>{{ $item->product->title }}</td>
