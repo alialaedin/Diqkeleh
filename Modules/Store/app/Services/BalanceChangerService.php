@@ -85,7 +85,7 @@ class BalanceChangerService
 			$this->product->update([
 				'status' => ProductStatus::OUT_OF_STOCK
 			]);
-		} else if ($this->store->balance > 0 && $this->product->status != ProductStatus::DRAFT) {
+		} else if ($this->store->balance > 0 && $this->product->status == ProductStatus::OUT_OF_STOCK) {
 			$this->product->update([
 				'status' => ProductStatus::AVAILABLE
 			]);
