@@ -25,12 +25,14 @@ class Order extends BaseModel
 		'description',
 		'address',
 		'delivered_at',
+		'is_settled'
 	];
 
 	protected $with = ['activeItems'];
 	protected $hidden = ['activeItems'];
 	protected $appends = ['total_amount', 'total_items_amount'];
 	protected $casts = ['status' => OrderStatus::class];
+	protected $attributes = ['is_settled' => 0];
 
 	public function calculateTotalAmount(): int
 	{
@@ -50,7 +52,6 @@ class Order extends BaseModel
 	{
 		return $this->attributes['status'] == OrderStatus::CANCELED->value;
 	}
-
 
 	protected function totalAmount(): Attribute
 	{
@@ -87,6 +88,18 @@ class Order extends BaseModel
 					$customerQ->when(request()->customer_mobile, fn($q) => $q->orWhere('mobile', request()->customer_mobile));
 				});
 			});
+	}
+
+	#[Scope]
+	protected function isNotSettled(Builder $query)
+	{
+		$query->where('is_settled', '=', 0);
+	}
+
+	#[Scope]
+	protected function delivered(Builder $query)
+	{
+		$query->where('status', '=', OrderStatus::DELIVERED);
 	}
 
 	public function loadNecessaryRelations()

@@ -25,6 +25,7 @@ return new class extends Migration
 			$table->enum('status', OrderStatus::cases())->default(OrderStatus::NEW);
 			$table->text('description')->nullable();
 			$table->json('address')->nullable();
+			$table->boolean('is_settled')->default(0);
 			$table->timestamp('delivered_at')->nullable();
 			$table->timestamps();
 		});

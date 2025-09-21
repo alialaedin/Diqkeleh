@@ -45,6 +45,10 @@ class OrderUpdaterService
 			$updateData['courier_id'] = $this->request->input('courier_id') ?? null;
 		}
 
+		if (!isset($updateData['courier_id']) || empty($updateData['courier_id'])) {
+			$updateData['is_settled'] = 1;
+		}
+
 		$this->order->update($updateData);
 
 		$message = "وضعیت سفارش با شناسه {$this->order->id} به {$this->order->status->label()} تغییر پیدا کرد";

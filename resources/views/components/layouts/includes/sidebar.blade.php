@@ -187,6 +187,12 @@
 
 			@role('super_admin')
 			<li class="slide">
+				<a class="side-menu__item" href="{{route("admin.settlement.index")}}">
+					<i class="ti-clipboard sidemenu_icon"></i>
+					<span class="side-menu__label">تسویه با پیک</span>
+				</a>
+			</li>
+			<li class="slide">
 				<a class="side-menu__item" href="{{route("admin.settings.index")}}">
 					<i class="ti-settings sidemenu_icon"></i>
 					<span class="side-menu__label">تنظیمات</span>
