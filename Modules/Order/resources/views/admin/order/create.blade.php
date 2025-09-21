@@ -877,6 +877,51 @@
         color: white;
         margin-bottom: 10px;
       }
+
+      @media print {
+        @page {
+          size: 80mm 210mm;
+          margin: 4mm 4mm 4mm 4mm;
+          /* adjust margins to printer specs */
+        }
+
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: Tahoma, Arial, sans-serif;
+          font-size: 9pt;
+          direction: rtl;
+          /* if Persian */
+          color: #000;
+        }
+
+        table {
+          width: 72.1mm;
+          /* printable width */
+          border-collapse: collapse;
+          table-layout: fixed;
+          word-wrap: break-word;
+          margin: 0 auto;
+        }
+
+        th,
+        td {
+          border: 1px solid #000;
+          padding: 2px 4px;
+          max-width: 24mm;
+          /* depending on number of columns */
+          text-align: right;
+          overflow-wrap: break-word;
+        }
+
+        tr {
+          page-break-inside: avoid;
+        }
+
+        .no-print {
+          display: none !important;
+        }
+      }
     </style>
 
   @endpush
