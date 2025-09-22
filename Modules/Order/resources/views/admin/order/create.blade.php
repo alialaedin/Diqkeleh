@@ -86,7 +86,11 @@
                       <div class="col-md-3">
                         <span class="fs-14 font-weight-bold">@{{ product.title }}</span>
                       </div>
-                      <div class="col-md-9 d-flex align-items-center" style="gap: 8px">
+                      <div class="col-md-2">
+                        <span>موجودی : </span>
+                        <b class="fs-14">@{{ product.store.balance }}</b>
+                      </div>
+                      <div class="col-md-7 d-flex align-items-center" style="gap: 8px">
 
                         <button class="btn btn-sm btn-outline-danger" @click="decreaseCartQuantity(product)"
                           :disabled="product.quantity == 0">کاهش</button>
