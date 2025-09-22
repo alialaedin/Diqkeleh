@@ -28,7 +28,7 @@ class ReportController extends Controller implements HasMiddleware
 					$ordersQuery->where('status', "!=", OrderStatus::CANCELED);
 					$ordersQuery->select(['id', 'customer_id', 'shipping_amount', 'discount_amount']);
 				},
-				'orders.activeItems:id,order_id,total_amount',
+				'orders.activeItems',
 				'payments:id,customer_id,amount'
 			])
 			->filters()
