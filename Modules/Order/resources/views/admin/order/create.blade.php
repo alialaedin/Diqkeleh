@@ -272,85 +272,12 @@
     <x-col class="text-center">
       <button type="button" @click="store" class="btn btn-sm btn-success mx-2" :disabled="isStoreButtonDisabled">ثبت
         سفارش</button>
-      <button type="button" @click="print" class="btn btn-sm btn-purple mx-2">پرینت</button>
       <button type="button" @click="reset" class="btn btn-sm btn-red mx-2">ریست</button>
     </x-col>
 
     <div style="margin-top: 80px"></div>
 
   </x-row>
-
-  <section class="section-print my-5 d-none d-print-block">
-    <h2 class=" mb-4">شماره سفارش: @{{ createdOrder?.id }}</h2>
-    <div class="d-flex flex-column">
-      <div clas="d-flex align-items-center">
-        <span class="fs-13">تاریخ: </span>
-        <time class="font-weight-bold fs-14">@{{ createdOrder?.shamsi_created_at }}</time>
-      </div>
-      <div clas="d-flex align-items-center">
-        <span class="fs-13">شماره فاکتور: </span>
-        <span class="font-weight-bold fs-14">@{{ createdOrder?.id }}</span>
-      </div>
-      <div clas="d-flex align-items-center">
-        <span class="fs-13">موبایل مشتری: </span>
-        <span class="font-weight-bold fs-14">@{{ customerMobile }}</span>
-      </div>
-    </div>
-    <h3 class="section-title text-center p-1 mt-4">اقلام سفارش</h3>
-    <table class="print-table table d-table w-100">
-      <thead>
-        <tr>
-          <th>ردیف</th>
-          <th>عنوان</th>
-          <th>تعداد</th>
-          <th>قیمت</th>
-          <th>تخفیف</th>
-          <th>جمع کل</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(product, index) in selectedProducts" :key="index">
-          <td>@{{ index + 1 }}</td>
-          <td>@{{ product.title }}</td>
-          <td>@{{ product.quantity }}</td>
-          <td>@{{ Number(product.price?.replace(/,/g, "") ?? 0).toLocaleString() }}</td>
-          <td>@{{ Number(product.discount?.replace(/,/g, "") ?? 0).toLocaleString() }}</td>
-          <td>@{{ productFinalPrices[index].toLocaleString() }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <table v-if="selectedProducts.length" class="print-table table d-table w-100">
-      <tbody>
-        <tr>
-          <td>تعداد کالا</td>
-          <td>@{{ selectedProducts.reduce((sum, product) => sum + product.quantity, 0) }}</td>
-        </tr>
-        <tr>
-          <td>مجموع قیمت کالا (تومان)</td>
-          <td>@{{ finalPrices.baseAmount.toLocaleString() }}</td>
-        </tr>
-        <tr>
-          <td>تخفیف (تومان)</td>
-          <td>@{{ finalPrices.discountAmount.toLocaleString() }}</td>
-        </tr>
-        <tr>
-          <td>از پوز (تومان)</td>
-          <td>@{{ finalPrices.finalAmount.toLocaleString() }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div v-if="!isOrderInPerson" class="d-flex flex-column" style="gap: 4px">
-      <div clas="d-flex align-items-center">
-        <span class="fs-13">محدوده: </span>
-        <time class="font-weight-bold fs-14">@{{ address?.range.title }}</span>
-      </div>
-      <div clas="d-flex align-items-center">
-        <span class="fs-13">آدرس: </span>
-        <span class="font-weight-bold fs-14">@{{ address?.address }}</span>
-      </div>
-    </div>
-    <div v-if="createdOrder?.description" class="mt-3">@{{ createdOrder?.description }}</div>
-  </section>
 
   <x-modal id="new-address-modal" title="ثبت آدرس جدید">
     <x-row>
@@ -629,9 +556,6 @@
               }
             });
           },
-          print() {
-            window.print();
-          },
           reset() {
             window.location.reload();
           },
@@ -689,9 +613,11 @@
 
             try {
               this.request(url, 'POST', data, async (result) => {
-                this.createdOrder = result.data.order;
-                setTimeout(() => this.print(), 100);
-                // this.popup('success', '', result.message);
+                // this.createdOrder = result.data.order;
+                // setTimeout(() => this.print(), 100);
+                this.popup('success', '', result.message);
+                window.open('/admin/orders/' + result.data.order.id + '/print', '_blank');
+                this.reset();
               });
             } catch (error) {
               console.log(error);
@@ -825,102 +751,6 @@
       label,
       input {
         font-size: 12px !important;
-      }
-    </style>
-
-    <style>
-      .section-print {
-        padding: 70px;
-      }
-
-      @media (max-width:1100px) {
-        .section-print {
-          padding: 50px;
-        }
-      }
-
-      @media (max-width:680px) {
-        .section-print {
-          padding: 25px;
-        }
-      }
-
-      .print-table {
-        display: table;
-      }
-
-      .print-table td {
-        border: 1px solid #cdcbcb;
-        padding: 5px 10px;
-        vertical-align: top;
-        font-size: 14px;
-        text-align: center;
-      }
-
-      .print-table th {
-        border: 1px solid #cdcbcb;
-        background: #f0f0f0;
-        font-weight: bold;
-        text-align: right;
-        padding: 5px 10px;
-        text-align: center;
-      }
-
-      .btn-print {
-        background-color: rgb(0, 102, 255);
-        color: white;
-        border-radius: 10px;
-      }
-
-      .section-title {
-        background-color: gray;
-        color: white;
-        margin-bottom: 10px;
-      }
-
-      @media print {
-        @page {
-          size: 80mm 210mm;
-          margin: 4mm 4mm 4mm 4mm;
-          /* adjust margins to printer specs */
-        }
-
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: Tahoma, Arial, sans-serif;
-          font-size: 9pt;
-          direction: rtl;
-          /* if Persian */
-          color: #000;
-        }
-
-        table {
-          width: 72.1mm;
-          /* printable width */
-          border-collapse: collapse;
-          table-layout: fixed;
-          word-wrap: break-word;
-          margin: 0 auto;
-        }
-
-        th,
-        td {
-          border: 1px solid #000;
-          padding: 2px 4px;
-          max-width: 24mm;
-          /* depending on number of columns */
-          text-align: right;
-          overflow-wrap: break-word;
-        }
-
-        tr {
-          page-break-inside: avoid;
-        }
-
-        .no-print {
-          display: none !important;
-        }
       }
     </style>
 

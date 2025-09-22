@@ -218,6 +218,13 @@
       @endif
     </section>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      window.print();
+    });
+  </script>
+
 </body>
 
 </html>
