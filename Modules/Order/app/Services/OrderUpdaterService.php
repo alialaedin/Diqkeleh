@@ -77,7 +77,7 @@ class OrderUpdaterService
 	private function sendSms(OrderStatus $newStatus)
 	{
 		$status = $newStatus->value;
-		
+
 		$smsSettings = [
 			OrderStatus::CANCELED->value => ['key' => 'order_canceled', 'setting' => 'send_canceled_order_sms'],
 			OrderStatus::DELIVERED->value => ['key' => 'order_delivered', 'setting' => 'send_delivered_order_sms'],

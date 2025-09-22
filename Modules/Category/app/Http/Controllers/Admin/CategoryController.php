@@ -3,10 +3,11 @@
 namespace Modules\Category\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Flasher\Toastr\Laravel\Facade\Toastr;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Modules\Activity\Helpers\ActivityLogHelper;
+use Modules\Category\Http\Requests\Admin\CategorySortRequest;
 use Modules\Category\Http\Requests\Admin\CategoryStoreRequest;
 use Modules\Category\Http\Requests\Admin\CategoryUpdateRequest;
 use Modules\Category\Models\Category;
@@ -61,5 +62,13 @@ class CategoryController extends Controller implements HasMiddleware
 		(new ActivityLogHelper($category))->deleted();
 
 		return to_route('admin.categories.index')->with('status', 'دسته بندی با موفقیت حذف شد');
+	}
+
+	public function sort(Request $request)
+	{
+		$request->validate(['orders' => 'required|array']);
+		Category::sort($request);
+
+		return response()->success('دسته بندی ها با موفقیت مرتب سازی شدند');
 	}
 }

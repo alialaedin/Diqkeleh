@@ -17,15 +17,19 @@
 <link href="{{ asset('assets/plugins/time-picker/jquery.timepicker.css')}}" rel="stylesheet" />
 <link href="{{ asset('assets/plugins/jQuery-countdowntimer/jQuery.countdownTimer.css')}}" rel="stylesheet" />
 <link href="{{ asset('assets/css-rtl/style-rtl.css')}}" rel="stylesheet" />
-<link href="{{ asset('assets/PersianDateTimePicker-bs4/src/jquery.md.bootstrap.datetimepicker.style.css') }}" rel="stylesheet" />
+<link href="{{ asset('assets/PersianDateTimePicker-bs4/src/jquery.md.bootstrap.datetimepicker.style.css') }}"
+  rel="stylesheet" />
 <link href="{{ asset('assets/select2/dist/css/select2.min.css')}}" rel="stylesheet" />
 <link href="{{ asset('assets/plugins/notify/css/jquery.growl.css') }}" rel="stylesheet">
 
 <style>
-
   /* @page {
     margin-block: 30px;
   } */
+
+  .glyphicon-move::before {
+    content: none;
+  }
 
   #growls-default {
     right: 80%;

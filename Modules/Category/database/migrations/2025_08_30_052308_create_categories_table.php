@@ -17,6 +17,7 @@ return new class extends Migration
 			$table->string('en_title')->unique();
 			$table->text('description')->nullable();
 			$table->boolean('status')->default(1);
+			$table->unsignedInteger('order');
 			$table->timestamps();
 		});
 	}

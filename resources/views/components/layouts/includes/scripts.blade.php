@@ -18,7 +18,7 @@
 <script src="{{ asset('assets/plugins/notify/js/jquery.growl.js') }}"></script> --}}
 <script src="{{ asset('assets/PersianDateTimePicker-bs4/src/jquery.md.bootstrap.datetimepicker.js') }}"></script>
 <script src="{{ asset('assets/select2/dist/js/select2.min.js') }}"></script>
-<script src="{{ asset('assets/sortable-js/Sortable.js') }}"></script>
+<script src="{{ asset('assets/sortable-js/sortable.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/moment/moment.js')}}"></script>
 {{--
 <script src="{{ asset('assets/plugins/othercharts/jquery.sparkline.min.js')}}"></script> --}}

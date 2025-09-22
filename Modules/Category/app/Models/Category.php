@@ -4,6 +4,7 @@ namespace Modules\Category\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Modules\Core\Models\BaseModel;
 use Modules\Core\Traits\HasCache;
@@ -14,14 +15,25 @@ class Category extends BaseModel
 {
 	use HasCache, PreventDeletionIfRelationsExist;
 
-	protected $fillable = ['title', 'en_title', 'description', 'status'];
+	protected $fillable = ['title', 'en_title', 'description', 'status', 'order'];
 	protected $withCount = ['products'];
 	protected $cacheKeys = ['admin_categories'];
 	protected $relationsPreventingDeletion = ['products' => 'دسته بندی دارای محصول است و قابل حذف نمی باشد'];
 
 	public static function getCategoriesForAdmin(): Collection
 	{
-		return Cache::rememberForever('admin_categories', fn() => self::latest()->get());
+		return Cache::rememberForever('admin_categories', fn() => self::query()->orderBy('order')->get());
+	}
+
+	public static function sort(Request $request)
+	{
+		$idsFromRequest = $request->input('orders');
+		$c = 1;
+		foreach ($idsFromRequest as $id) {
+			$cat = self::getCategoriesForAdmin()->where('id', $id)->first();
+			$cat->order = $c++;
+			$cat->save();
+		}
 	}
 
 	public function products(): HasMany

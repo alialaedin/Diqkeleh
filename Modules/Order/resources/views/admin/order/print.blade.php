@@ -1,46 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+
+  <link href="{{ asset('assets/font/font.css')}}" rel="stylesheet" />
+
   <style>
     .section-print {
       padding: 70px;
     }
 
-    media (max-width:1100px) {
+    @media (max-width:1100px) {
       .section-print {
         padding: 50px;
       }
     }
 
-    media (max-width:680px) {
+    @media (max-width:680px) {
       .section-print {
         padding: 25px;
       }
     }
 
-    .print-table {
+    @media print {
+      .section-print {
+        padding: 0;
+      }
+    }
+
+    .table {
       display: table;
     }
 
-    .print-table td {
-      border: 1px solid #cdcbcb;
-      padding: 5px 10px;
+    .table td {
+      border: 1px solid black;
+      padding: 5px 3px;
       vertical-align: top;
-      font-size: 14px;
+      font-size: 9.5px;
       text-align: center;
     }
 
-    .print-table th {
-      border: 1px solid #cdcbcb;
+    .table th {
+      border: 1px solid black;
       background: #f0f0f0;
       font-weight: bold;
       text-align: right;
-      padding: 5px 10px;
+      padding: 5px 3px;
       text-align: center;
+      font-size: 9.5px;
     }
 
     .btn-print {
@@ -49,79 +59,105 @@
       border-radius: 10px;
     }
 
+    @media print {
+      .btn-print {
+        display: none;
+      }
+    }
+
     .section-title {
-      background-color: gray;
-      color: white;
       margin-bottom: 10px;
     }
 
-    media print {
-      page {
-        size: 80mm 210mm;
-        margin: 4mm 4mm 4mm 4mm;
-        /* adjust margins to printer specs */
-      }
+    .d-flex {
+      display: -ms-flexbox !important;
+      display: flex !important;
+    }
 
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: Tahoma, Arial, sans-serif;
-        font-size: 9pt;
-        direction: rtl;
-        /* if Persian */
-        color: #000;
-      }
+    .flex-column {
+      -ms-flex-direction: column !important;
+      flex-direction: column !important;
+    }
 
-      table {
-        width: 72.1mm;
-        /* printable width */
-        border-collapse: collapse;
-        table-layout: fixed;
-        word-wrap: break-word;
-        margin: 0 auto;
-      }
+    .justify-content-between {
+      -ms-flex-pack: justify !important;
+      justify-content: space-between !important;
+    }
 
-      th,
-      td {
-        border: 1px solid #000;
-        padding: 2px 4px;
-        max-width: 24mm;
-        /* depending on number of columns */
-        text-align: right;
-        overflow-wrap: break-word;
-      }
+    .align-items-center {
+      -ms-flex-align: center !important;
+      align-items: center !important;
+    }
 
-      tr {
-        page-break-inside: avoid;
-      }
+    .text-center {
+      text-align: center !important;
+    }
 
-      .no-print {
-        display: none !important;
-      }
+    .mb-4,
+    .my-4 {
+      margin-bottom: 1.5rem !important;
+    }
+
+    .mt-4,
+    .my-4 {
+      margin-top: 1.5rem !important;
+    }
+
+    .pr-5,
+    .px-5 {
+      padding-right: 3rem !important;
+    }
+
+    .p-1 {
+      padding: 0.25rem !important;
+    }
+
+    .pt-1,
+    .py-1 {
+      padding-top: 0.25rem !important;
+    }
+
+    .fs-13 {
+      font-size: 13px !important;
+    }
+
+    .fs-14 {
+      font-size: 14px !important;
+    }
+
+    .font-weight-bold {
+      font-weight: bold !important;
+    }
+
+    .w-100 {
+      width: 100% !important;
     }
   </style>
 </head>
 
 <body>
-  <main>
-    <section class="section-print my-5 d-none d-print-block">
-      <h2 class=" mb-4">شماره سفارش: {{ $order->id }}</h2>
+  <main class="">
+    <section class="section-print my-5">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="text-center mb-4">شماره سفارش: {{ $order->id }}</h2>
+        <button class="btn-print mt-4 px-5 py-1 align-items-center" onclick="window.print()">چاپ فاکتور</button>
+      </div>
       <div class="d-flex flex-column">
-        <div clas="d-flex align-items-center">
+        <div class="d-flex align-items-center">
           <span class="fs-13">تاریخ: </span>
           <time class="font-weight-bold fs-14">{{ verta($order->created_at)->formatDate() }}</time>
         </div>
-        <div clas="d-flex align-items-center">
-          <span class="fs-13">شماره فاکتور: </span>
-          <span class="font-weight-bold fs-14">{{ $order->id }}</span>
+        <div class="d-flex align-items-center">
+          <span class="fs-13">مشتری: </span>
+          <span class="font-weight-bold fs-14">{{ $order->customer->full_name }}</span>
         </div>
-        <div clas="d-flex align-items-center">
+        <div class="d-flex align-items-center">
           <span class="fs-13">موبایل مشتری: </span>
           <span class="font-weight-bold fs-14">{{ $order->customer->mobile }}</span>
         </div>
       </div>
       <h3 class="section-title text-center p-1 mt-4">اقلام سفارش</h3>
-      <table class="print-table table d-table w-100">
+      <table class="table d-table w-100">
         <thead>
           <tr>
             <th>ردیف</th>
@@ -143,39 +179,42 @@
               <td>{{ number_format($item->total_amount) }}</td>
             </tr>
           @endforeach
-
         </tbody>
       </table>
-      <table class="print-table table d-table w-100">
+      <table class="table d-table w-100">
         <tbody>
           <tr>
             <td>تعداد کالا</td>
-            <td>{{ $order->items->count() }}</td>
+            <td>{{ $order->items->sum('quantity') }}</td>
           </tr>
           <tr>
-            <td>مجموع قیمت کالا (تومان)</td>
-            <td>{{ number_format($order->items->sum('total_base_amount')) }}</td>
+            <td>مجموع کالا ها (تومان)</td>
+            <td>{{ number_format($order->items->sum('total_amount')) }}</td>
           </tr>
           <tr>
             <td>تخفیف (تومان)</td>
-            <td>{{ number_format($order->items->sum('total_discount_amount')) }}</td>
+            <td>{{ number_format($order->discount_amount) }}</td>
+          </tr>
+          <tr>
+            <td>هزینه ارسال (تومان)</td>
+            <td>{{ number_format($order->shipping_amount) }}</td>
+          </tr>
+          <tr>
+            <td>مبلغ قابل پرداخت (تومان)</td>
+            <td>{{ number_format($order->total_amount) }}</td>
           </tr>
         </tbody>
       </table>
-      @if ($order->address->isNotEmpty())
-        <div class="d-flex flex-column" style="gap: 4px">
-          <div clas="d-flex align-items-center">
-            <span class="fs-13">محدوده: </span>
-            <time class="font-weight-bold fs-14">{{ $order->address?->range->title }}</span>
-          </div>
-          <div clas="d-flex align-items-center">
+      @if ($order->address_id)
+        <div class="d-flex flex-column mt-4" style="gap: 4px">
+          <div class="d-flex align-items-center">
             <span class="fs-13">آدرس: </span>
-            <span class="font-weight-bold fs-14">{{ $order->address?->address }}</span>
+            <span class="font-weight-bold fs-14">{{ json_decode($order->address)?->address }}</span>
           </div>
         </div>
       @endif
       @if ($order->description)
-        <div class="mt-3">{{ $order->description }}</div>
+        <div class="mt-4">{{ $order->description }}</div>
       @endif
     </section>
   </main>

@@ -31,7 +31,7 @@ class BalanceChangerService
 		$this->user = Auth::user();
 
 		$this->store = Store::query()
-			->with('product:id,title')
+			->with('product:id,title,status')
 			->where('product_id', '=', $this->data->product_id)
 			->firstOrFail();
 
