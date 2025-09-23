@@ -2,6 +2,7 @@
 
 namespace Modules\Category\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
@@ -19,6 +20,13 @@ class Category extends BaseModel
 	protected $withCount = ['products'];
 	protected $cacheKeys = ['admin_categories'];
 	protected $relationsPreventingDeletion = ['products' => 'دسته بندی دارای محصول است و قابل حذف نمی باشد'];
+
+	protected static function booted(): void
+	{
+		static::creating(function ($category) {
+			$category->order = self::query()->max('order') + 1;
+		});
+	}
 
 	public static function getCategoriesForAdmin(): Collection
 	{

@@ -50,7 +50,7 @@ class ReportController extends Controller implements HasMiddleware
 			->filters()
 			->select(['id', 'title', 'created_at'])
 			->with([
-				'activeOrderItems:id,product_id,total_amount,order_id',
+				'activeOrderItems',
 				'activeOrderItems.order:id,status',
 			])
 			->get()

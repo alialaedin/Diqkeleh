@@ -169,7 +169,7 @@
           </tr>
         </thead>
         <tbody>
-          @foreach ($order->items as $item)
+          @foreach ($order->activeItems as $item)
             <tr>
               <td class="font-weight-bold">{{ $loop->iteration }}</td>
               <td>{{ $item->product->title }}</td>
@@ -185,11 +185,11 @@
         <tbody>
           <tr>
             <td>تعداد کالا</td>
-            <td>{{ $order->items->sum('quantity') }}</td>
+            <td>{{ $order->activeItems->sum('quantity') }}</td>
           </tr>
           <tr>
             <td>مجموع کالا ها (تومان)</td>
-            <td>{{ number_format($order->items->sum('total_amount')) }}</td>
+            <td>{{ number_format($order->activeItems->sum('total_amount')) }}</td>
           </tr>
           <tr>
             <td>تخفیف (تومان)</td>

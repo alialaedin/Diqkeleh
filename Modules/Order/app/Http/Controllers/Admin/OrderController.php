@@ -20,7 +20,6 @@ use Modules\Order\Services\OrderUpdaterService;
 use Modules\Payment\Enums\PaymentType;
 use Modules\Payment\Models\Payment;
 use Modules\Product\Models\Product;
-use Modules\Setting\Models\Setting;
 
 class OrderController extends Controller implements HasMiddleware
 {
