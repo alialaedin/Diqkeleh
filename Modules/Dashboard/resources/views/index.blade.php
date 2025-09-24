@@ -4,7 +4,9 @@
     <x-breadcrumb />
     <div class="d-flex align-items-center" style="gap: 6px">
       <a class="btn btn-sm btn-blue" href="{{ route('admin.store-multi-charge.index') }}">شارژ محصولات</a>
-      <a class="btn btn-sm btn-azure" href="{{ route('admin.orders.create') }}">ثبت سفارش</a>
+      <a class="btn btn-sm btn-azure" href="{{ route('admin.orders.index') }}">همه سفارشات</a>
+      <a class="btn btn-sm btn-indigo" href="{{ route('admin.orders.today-orders') }}">سفارشات امروز</a>
+      <a class="btn btn-sm btn-purple" href="{{ route('admin.orders.create') }}">ثبت سفارش جدید</a>
     </div>
   </div>
 

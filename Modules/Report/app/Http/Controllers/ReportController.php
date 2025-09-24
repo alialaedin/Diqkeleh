@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Modules\Customer\Models\Customer;
-use Modules\Order\Enums\OrderStatus;
 use Modules\Permission\Models\Role;
 use Modules\Product\Models\Product;
 
@@ -24,11 +23,10 @@ class ReportController extends Controller implements HasMiddleware
 		$customers = Customer::query()
 			->select(['id', 'full_name', 'mobile'])
 			->with([
-				'orders' => function ($ordersQuery) {
-					$ordersQuery->where('status', "!=", OrderStatus::CANCELED);
-					$ordersQuery->select(['id', 'customer_id', 'shipping_amount', 'discount_amount']);
+				'activeOrders' => function ($ordersQuery) {
+					$ordersQuery->select(['id', 'customer_id', 'shipping_amount', 'discount_amount', 'status']);
+					$ordersQuery->with('activeItems');
 				},
-				'orders.activeItems',
 				'payments:id,customer_id,amount'
 			])
 			->filters()
@@ -38,7 +36,7 @@ class ReportController extends Controller implements HasMiddleware
 			->withQueryString()
 			->each(function (Customer $customer) {
 				$customer->append(['total_sales_amount', 'total_payment_amount', 'remaining_amount']);
-				$customer->makeHidden(['orders', 'payments']);
+				$customer->makeHidden(['activeOrders', 'payments']);
 			});
 
 		return view('report::customers', compact('customers'));
@@ -47,18 +45,31 @@ class ReportController extends Controller implements HasMiddleware
 	public function products()
 	{
 		$products = Product::query()
-			->filters()
 			->select(['id', 'title', 'created_at'])
-			->with([
-				'activeOrderItems',
-				'activeOrderItems.order:id,status',
-			])
+			->with(['activeOrderItems' => fn($oi) => $oi->with('order')->filterByDates()])
 			->get()
 			->each(function (Product $product) {
 				$product->append(['sales_amount', 'sales_count']);
 				$product->makeHidden('activeOrderItems');
-			});
+			})
+			->sortByDesc('sales_amount');
 
 		return view('report::products', compact('products'));
+	}
+
+	public function todaySales()
+	{
+		$products = Product::query()
+			->select(['id', 'title', 'created_at'])
+			->with(['activeOrderItems' => fn($oi) => $oi->today()->with('order')])
+			->get()
+			->each(function (Product $product) {
+				$product->append(['sales_amount', 'sales_count']);
+				$product->makeHidden('activeOrderItems');
+			})
+			->filter(fn(Product $product) => $product->sales_count > 0)
+			->sortByDesc('sales_amount');
+
+		return view('report::today-sales', compact('products'));
 	}
 }

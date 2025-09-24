@@ -7,15 +7,13 @@ use Modules\Order\Http\Controllers\Admin\OrderItemController;
 Route::adminSuperGroup(function () {
 
 	Route::prefix('/orders')->name('orders.')->group(function () {
+		Route::get('/today', [OrderController::class, 'today'])->name('today-orders');
 		Route::get('{order}/print', [OrderController::class, 'print'])->name('print');
-		Route::get('/', [OrderController::class, 'index'])->name('index');
-		Route::get('/create', [OrderController::class, 'create'])->name('create');
-		Route::get('{order}', [OrderController::class, 'show'])->name('show');
-		Route::post('/', [OrderController::class, 'store'])->name('store');
-		Route::patch('/{order}', [OrderController::class, 'update'])->name('update');
 		Route::patch('/{order}/change-status', [OrderController::class, 'changeStatus'])->name('change-status');
 		Route::post('/pay', [OrderController::class, 'pay'])->name('pay');
 	});
+
+	Route::resource('/orders', OrderController::class)->only(['index', 'create', 'show', 'store', 'update']);
 
 	Route::prefix('/order-items')->name('order-items.')->group(function () {
 

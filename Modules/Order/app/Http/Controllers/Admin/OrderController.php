@@ -43,9 +43,23 @@ class OrderController extends Controller implements HasMiddleware
 			->with(['customer:id,full_name,mobile', 'courier:id,full_name'])
 			->latest()
 			->filters()
-			->paginateOrAll(100);
+			->paginateOrAll();
 
 		return view('order::admin.order.index', compact(['orders', 'statuses', 'couriers', 'types']));
+	}
+
+	public function today()
+	{
+		$couriers = Courier::getAll();
+		$types = PaymentType::getCasesWithLabel();
+		$orders = Order::query()
+			->select(['id', 'customer_id', 'shipping_amount', 'discount_amount', 'status', 'delivered_at', 'created_at'])
+			->with(['customer:id,full_name,mobile', 'courier:id,full_name'])
+			->today()
+			->latest()
+			->get();
+
+		return view('order::admin.order.today-orders', compact(['orders', 'couriers', 'types']));
 	}
 
 	public function create()

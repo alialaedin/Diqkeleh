@@ -34,21 +34,32 @@ class Product extends BaseModel
 		'discount',
 		'discount_type',
 		'discount_until',
-		'has_daily_balance'
+		'has_daily_balance',
+		'order'
 	];
 
 	protected $appends = ['final_price', 'discount_amount'];
 	protected $with = ['category'];
+	protected $cacheKeys = ['products_for_filter', 'all_products', 'admin_categories'];
+	protected $relationsPreventingDeletion = ['orderItems' => 'به دلیل وجود سفارش برای این محصول امکان حذف ندارد'];
+
 	protected $attributes = [
 		'status' => ProductStatus::DRAFT,
 		'has_daily_balance' => 0
 	];
+
 	protected $casts = [
 		'status' => ProductStatus::class,
 		'discount_type' => ProductDiscountType::class,
 	];
-	protected $cacheKeys = ['products_for_filter', 'all_products', 'admin_categories'];
-	protected $relationsPreventingDeletion = ['orderItems' => 'به دلیل وجود سفارش برای این محصول امکان حذف ندارد'];
+
+	protected static function booted(): void
+	{
+		static::creating(function (self $product) {
+			$maxOrder = self::where('category_id', $product->category_id)->max('order');
+			$product->order = ($maxOrder ?? 0) + 1;
+		});
+	}
 
 	public static function getAllProductsForFilter(): Collection
 	{
@@ -83,14 +94,14 @@ class Product extends BaseModel
 	protected function salesAmount(): Attribute
 	{
 		return Attribute::make(
-			get: fn() => $this->activeOrderItems?->sum('total_amount') ?? 0
+			get: fn(): int => $this->activeOrderItems?->sum('total_amount') ?? 0
 		);
 	}
 
 	protected function salesCount(): Attribute
 	{
 		return Attribute::make(
-			get: fn() => $this->activeOrderItems?->sum('quantity') ?? 0
+			get: fn(): int => $this->activeOrderItems?->sum('quantity') ?? 0
 		);
 	}
 

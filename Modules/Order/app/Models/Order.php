@@ -63,7 +63,7 @@ class Order extends BaseModel
 	protected function totalItemsAmount(): Attribute
 	{
 		return Attribute::make(
-			get: fn(): int => $this->activeItems->sum('total_amount')
+			get: fn(): int => $this->activeItems?->sum('total_amount') ?? 0
 		);
 	}
 
@@ -78,16 +78,15 @@ class Order extends BaseModel
 	protected function filters(Builder $query)
 	{
 		$query
-			->when(request()->order_id, fn($q) => $q->where('order_id', request()->order_id))
-			->when(request()->status, fn($q) => $q->where('status', request()->status))
-			->when(request()->start_date, fn(Builder $q) => $q->whereDate('created_at', '>=', request()->start_date))
-			->when(request()->end_date, fn(Builder $q) => $q->whereDate('created_at', '<=', request()->end_date))
+			->when(request()->order_id, fn(Builder $q) => $q->where('order_id', request()->order_id))
+			->when(request()->status, fn(Builder $q) => $q->where('status', request()->status))
 			->when(request()->customer_name || request()->customer_mobile, function ($q) {
 				$q->whereHas('customer', function ($customerQ) {
-					$customerQ->when(request()->customer_name, fn($q) => $q->orWhere('full_name', 'LIKE', '%' . request()->customer_name . '%'));
-					$customerQ->when(request()->customer_mobile, fn($q) => $q->orWhere('mobile', request()->customer_mobile));
+					$customerQ->when(request()->customer_name, fn($q2) => $q2->where('full_name', 'LIKE', '%' . request()->customer_name . '%'));
+					$customerQ->when(request()->customer_mobile, fn($q2) => $q2->where('mobile', request()->customer_mobile));
 				});
-			});
+			})
+			->filterByDates();
 	}
 
 	#[Scope]

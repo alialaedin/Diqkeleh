@@ -25,9 +25,9 @@
 			targetTextSelector: textInputSelector,
 			englishNumber: false,
 			toDate: true,
-			enableTimePicker: true,
-			dateFormat: 'yyyy-MM-dd HH:mm',
-			textFormat: 'yyyy-MM-dd HH:mm',
+			// enableTimePicker: true,
+			dateFormat: 'yyyy-MM-dd',
+			textFormat: 'yyyy-MM-dd',
 			groupId: 'rangeSelector1',
 		});
 	</script>

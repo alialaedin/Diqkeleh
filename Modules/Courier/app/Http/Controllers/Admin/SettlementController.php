@@ -22,7 +22,7 @@ class SettlementController extends Controller
 
 		if (!request()->has('end_date') || request()->isNotFilled('end_date')) {
 			request()->merge([
-				'end_date' => now()->format('Y-m-d H:i')
+				'end_date' => Carbon::parse(verta()->endDay()->toCarbon())->format('Y-m-d H:i')
 			]);
 		}
 

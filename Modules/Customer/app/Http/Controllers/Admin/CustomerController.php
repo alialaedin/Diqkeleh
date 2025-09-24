@@ -39,10 +39,10 @@ class CustomerController extends Controller implements HasMiddleware
 	{
 		$customer->load([
 			'addresses',
-			'orders' => fn (HasMany $o) => $o->orderByDesc('id')->take(5),
+			'orders' => fn (HasMany $o) => $o->orderByDesc('id'),
 			'orders.activeItems',
-			'payments' => fn (HasMany $p) => $p->orderByDesc('id')->take(5),
-			'walletTransactions' => fn (HasManyThrough $w) => $w->orderByDesc('id')->take(5),
+			'payments' => fn (HasMany $p) => $p->orderByDesc('id'),
+			'walletTransactions' => fn (HasManyThrough $w) => $w->orderByDesc('id'),
 		])
 		->loadCount(['orders', 'payments', 'deposits', 'withdraws'])
 		->append(['total_sales_amount', 'total_payment_amount', 'remaining_amount']);

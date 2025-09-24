@@ -44,7 +44,7 @@ class Customer extends BaseModel
 	protected function totalSalesAmount(): Attribute
 	{
 		return Attribute::make(
-			get: fn(): int => $this->orders->where('status', '!=', OrderStatus::CANCELED)->sum(fn(Order $o) => $o->total_amount) ?? 0
+			get: fn(): int => $this->activeOrders->sum(fn(Order $o) => $o->total_amount) ?? 0
 		);
 	}
 

@@ -38,6 +38,7 @@
 						<td><x-jalali-date :date="$category->created_at" format="date" /></td>
 						<td><x-jalali-date :date="$category->created_at" format="time" /></td>
 						<td>
+							<x-show-button :model="$category" route="admin.categories.show" />
 							<x-edit-button :model="$category" route="admin.categories.edit" />
 							<x-delete-button :model="$category" route="admin.categories.destroy"
 								:disabled="$category->products_count" />

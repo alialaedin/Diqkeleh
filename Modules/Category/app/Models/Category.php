@@ -36,13 +36,35 @@ class Category extends BaseModel
 	public static function sort(Request $request)
 	{
 		$idsFromRequest = $request->input('orders');
-		$c = 1;
-		foreach ($idsFromRequest as $id) {
-			$cat = self::getCategoriesForAdmin()->where('id', $id)->first();
-			$cat->order = $c++;
-			$cat->save();
+
+		$categories = self::getCategoriesForAdmin()
+			->whereIn('id', $idsFromRequest)
+			->keyBy('id');
+
+		foreach ($idsFromRequest as $index => $id) {
+			if (isset($categories[$id])) {
+				$category = $categories[$id];
+				$category->order = $index + 1;
+				$category->save();
+			}
 		}
 	}
+
+
+	public function sortProducts(Request $request)
+	{
+		$idsFromRequest = $request->input('products');
+		$products = $this->products->whereIn('id', $idsFromRequest)->keyBy('id');
+
+		foreach ($idsFromRequest as $index => $id) {
+			if (isset($products[$id])) {
+				$product = $products[$id];
+				$product->order = $index + 1;
+				$product->save();
+			}
+		}
+	}
+
 
 	public function products(): HasMany
 	{
