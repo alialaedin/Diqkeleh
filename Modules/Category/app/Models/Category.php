@@ -50,7 +50,6 @@ class Category extends BaseModel
 		}
 	}
 
-
 	public function sortProducts(Request $request)
 	{
 		$idsFromRequest = $request->input('products');
@@ -58,9 +57,9 @@ class Category extends BaseModel
 
 		foreach ($idsFromRequest as $index => $id) {
 			if (isset($products[$id])) {
-				$product = $products[$id];
-				$product->order = $index + 1;
-				$product->save();
+				$products[$id]->update([
+					'order' => $index + 1
+				]);
 			}
 		}
 	}

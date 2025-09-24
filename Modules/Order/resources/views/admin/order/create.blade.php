@@ -528,7 +528,7 @@
             product.quantity = 0;
           },
           getProductsByCategoryId(categoryId) {
-            return this.products.filter(p => p.category_id == categoryId) ?? [];
+            return this.products.filter(p => p.category_id == categoryId)?.sort((a, b) => a.order - b.order) ?? [];
           },
           increaseCartQuantity(product) {
             if (product.quantity < product.store.balance) {
