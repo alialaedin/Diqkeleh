@@ -9,26 +9,19 @@
           <i class="feather feather-x"></i>
         </a>
       </div>
-      <div class="d-flex order-lg-2 my-auto mr-auto">
-        <div class="dropdown header-fullscreen">
-          <a class="nav-link icon full-screen-link">
-            <i class="feather feather-maximize fullscreen-button fullscreen header-icons"></i>
-            <i class="feather feather-minimize fullscreen-button exit-fullscreen header-icons"></i>
-          </a>
-        </div>
-        <div>
-          <button
-            onclick="event.preventDefault();document.getElementById('logout-form').submit();"
-            class="nav-link icon border-0"
-            data-toggle="tooltip"
-            data-original-title="خروج">
-            <i class="feather feather-log-out header-icon"></i>
-          </button>
-          <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
-            @csrf
-          </form>
-        </div>
+      <div class="d-flex  my-auto mr-auto" style="gap: 8px;">
+        <a class="btn btn-light" href="{{ route('admin.store-multi-charge.index') }}">شارژ محصولات</a>
+        <a class="btn btn-light" href="{{ route('admin.orders.index') }}">همه سفارشات</a>
+        <a class="btn btn-light" href="{{ route('admin.orders.create') }}">سفارش جدید</a>
+        <a class="btn btn-light" href="{{ route('admin.orders.today-orders') }}">سفارشات امروز</a>
+        <button onclick="event.preventDefault();document.getElementById('logout-form').submit();"
+          class="btn btn-red">خروج
+        </button>
       </div>
     </div>
   </div>
 </div>
+
+<form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+  @csrf
+</form>
